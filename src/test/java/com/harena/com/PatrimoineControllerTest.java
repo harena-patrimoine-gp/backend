@@ -10,8 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,7 +20,6 @@ public class PatrimoineControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Test GET /patrimoines
     @Test
     public void getPatrimoines_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines")
@@ -28,7 +27,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test PUT /patrimoines
     @Test
     public void crupdatePatrimoines_shouldReturn200() throws Exception {
         String requestBody = "{\"data\": [{\"nom\": \"Patrimoine1\", \"valeur_comptable\": 1000}]}";
@@ -38,7 +36,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test GET /patrimoines/{nom_patrimoine}
     @Test
     public void getPatrimoineByNom_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines/Patrimoine1")
@@ -46,7 +43,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test PUT /patrimoines/{nom_patrimoine}/possessions
     @Test
     public void crupdatePatrimoinePossessions_shouldReturn200() throws Exception {
         String requestBody = "{\"data\": [{\"type\": \"MATERIEL\", \"materiel\": {\"nom\": \"Materiel1\", \"valeur_comptable\": 500}}]}";
@@ -56,7 +52,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test GET /patrimoines/{nom_patrimoine}/possessions
     @Test
     public void getPatrimoinePossessions_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines/Patrimoine1/possessions")
@@ -64,7 +59,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test GET /patrimoines/{nom_patrimoine}/possessions/{nom_possession}
     @Test
     public void getPatrimoinePossessionByNom_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines/Patrimoine1/possessions/Possession1")
@@ -72,7 +66,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test DELETE /patrimoines/{nom_patrimoine}/possessions/{nom_possession}
     @Test
     public void deletePatrimoinePossessionByNom_shouldReturn204() throws Exception {
         mockMvc.perform(delete("/patrimoines/Patrimoine1/possessions/Possession1")
@@ -80,7 +73,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    // Test GET /patrimoines/{nom_patrimoine}/flux-impossibles
     @Test
     public void getPatrimoineFluxImpossibles_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines/Patrimoine1/flux-impossibles")
@@ -90,7 +82,6 @@ public class PatrimoineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // Test GET /patrimoines/{nom_patrimoine}/graphe
     @Test
     public void getPatrimoineGraph_shouldReturn200() throws Exception {
         mockMvc.perform(get("/patrimoines/Patrimoine1/graphe")
