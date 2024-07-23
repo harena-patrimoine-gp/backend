@@ -34,7 +34,7 @@ with_codeql: 'false'
 with_database: none
 with_file_storage: 'true'
 with_gen_clients: 'true'
-with_own_vpc: 'true'
+with_own_vpc: 'false'
 with_publish_to_npm_registry: 'false'
 with_queues_nb: 2
 with_sentry: 'false'
