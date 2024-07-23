@@ -27,8 +27,6 @@ jobs:
 
     env:
       AWS_REGION: eu-west-3
-      CODEARTIFACT_AUTH_TOKEN : `aws codeartifact get-authorization-token --domain harena --domain-owner 182574566954 --region eu-west-3 --query authorizationToken --output text`
-
     steps:
       - uses: actions/checkout@v4.1.6
 
@@ -46,6 +44,8 @@ jobs:
         if: ${{ github.event.inputs.run_tests == 'no' }}
         run: |
           printf "tasks.named('test').configure {\n    enabled = false\n}" >> build.gradle
+      - name: Export CodeArtifact token
+        run: echo "CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain harena --domain-owner 182574566954 --region eu-west-3 --query authorizationToken --output text)" >> $GITHUB_ENV
 
       - run: sam build
 
