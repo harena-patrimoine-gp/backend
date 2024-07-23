@@ -206,6 +206,9 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
     testImplementation 'org.junit-pioneer:junit-pioneer:2.2.0'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
 
 implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 }
