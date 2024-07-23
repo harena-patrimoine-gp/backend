@@ -39,7 +39,7 @@ with_publish_to_npm_registry: 'false'
 with_queues_nb: 2
 with_sentry: 'false'
 with_snapstart: 'false'
-with_sonar: 'false'
+with_sonar: 'true'
 with_swagger_ui: 'true'
 worker_batch: 5
 worker_function_1_timeout: 600

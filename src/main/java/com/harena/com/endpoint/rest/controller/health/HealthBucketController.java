@@ -55,7 +55,6 @@ public class HealthBucketController {
     writer.write(content);
     writer.close();
   }
-
   private File can_upload_file_then_download_file(File toUpload, String bucketKey)
       throws IOException {
     bucketComponent.upload(toUpload, bucketKey);
