@@ -19,9 +19,18 @@ jacoco {
 
 
 
+
 repositories {
 
     mavenCentral()
+    maven {
+        url 'https://harena-182574566954.d.codeartifact.eu-west-3.amazonaws.com/maven/harena-patrimoine/'
+        credentials {
+            username "aws"
+            password System.env.CODEARTIFACT_AUTH_TOKEN
+        }
+    }
+
 }
 
 java {
@@ -190,6 +199,8 @@ dependencies {
 
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
     implementation 'io.swagger:swagger-annotations:1.6.12'
+
+    implementation 'school.hei:patrimoine:1.0-SNAPSHOT'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.1'
