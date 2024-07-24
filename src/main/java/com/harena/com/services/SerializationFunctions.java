@@ -4,10 +4,19 @@ import com.harena.com.file.BucketComponent;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.hei.patrimoine.modele.Patrimoine;
+import school.hei.patrimoine.modele.Personne;
+import school.hei.patrimoine.modele.possession.Argent;
+import school.hei.patrimoine.modele.possession.FluxArgent;
+import school.hei.patrimoine.modele.possession.Materiel;
+import school.hei.patrimoine.modele.possession.Possession;
+import school.hei.patrimoine.serialisation.Serialiseur;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.Base64;
+import java.util.Set;
+
 @Service
 public class SerializationFunctions {
 
@@ -44,4 +53,8 @@ public class SerializationFunctions {
         }
     }
 
+
+
 }
+
+
