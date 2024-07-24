@@ -1,13 +1,18 @@
 package com.harena.com.services;
 
+import com.harena.com.file.BucketComponent;
+import lombok.AllArgsConstructor;
 import school.hei.patrimoine.modele.Patrimoine;
 import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Base64;
-
+@AllArgsConstructor
 public class Serialization {
-    public static File serialize(Patrimoine patrimoine) throws IOException {
+    private BucketComponent bucketComponent;
+
+    public File serialize(Patrimoine patrimoine) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(patrimoine);
@@ -16,7 +21,7 @@ public class Serialization {
         return writeBase64ToTxt(base64String , patrimoine.nom()+".txt");
     }
 
-    private static File writeBase64ToTxt(String base64String, String filePath) {
+    private File writeBase64ToTxt(String base64String, String filePath) {
         File file = new File(filePath);
         try (FileWriter writer = new FileWriter(filePath)) {
              writer.write(base64String);
@@ -26,4 +31,17 @@ public class Serialization {
         }
         return file;
     }
+
+    public Patrimoine decodeFile (File file) throws IOException {
+        String encodedTxt = new String(Files.readAllBytes(file.toPath()));
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedTxt);
+
+        try(ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
+            ObjectInputStream ois = new ObjectInputStream(bais)){
+                return (Patrimoine) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
