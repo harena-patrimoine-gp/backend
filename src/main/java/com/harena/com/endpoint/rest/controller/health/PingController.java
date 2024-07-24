@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import school.hei.patrimoine.modele.Patrimoine;
 
 @PojaGenerated
 @RestController
@@ -16,8 +17,12 @@ public class PingController {
   public static final ResponseEntity<String> KO =
       new ResponseEntity<>("KO", HttpStatus.INTERNAL_SERVER_ERROR);
 
+
+
   @GetMapping("/ping")
   public String ping() {
     return "pong";
   }
+
+
 }
