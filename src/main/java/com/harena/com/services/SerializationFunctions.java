@@ -2,15 +2,15 @@ package com.harena.com.services;
 
 import com.harena.com.file.BucketComponent;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import school.hei.patrimoine.modele.Patrimoine;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Base64;
-@AllArgsConstructor
-public class Serialization {
-    private BucketComponent bucketComponent;
+@Service
+public class SerializationFunctions {
+
 
     public File serialize(Patrimoine patrimoine) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
