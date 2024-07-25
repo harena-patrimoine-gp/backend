@@ -10,7 +10,10 @@ import school.hei.patrimoine.modele.possession.Possession;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -43,5 +46,17 @@ public class PatrimoineServices {
         File createdFile = functions.serialize(patrimoine);
         bucketComponent.upload(createdFile, patrimoine.nom() + ".txt");
         return patrimoine;
+    }
+
+    public List<Patrimoine> getAllPatrimoine() throws IOException {
+        List<Patrimoine> patrimoines = new ArrayList<>();
+        File list = bucketComponent.download("patrimoine_list.txt");
+        String decodedList = new String(Files.readAllBytes(list.toPath()));
+        List<String> listPatrimoineFiles = List.of(decodedList.split(";"));
+        for (String listPatrimoineFile : listPatrimoineFiles){
+            File file = bucketComponent.download(listPatrimoineFile+".txt");
+            patrimoines.add(functions.decodeFile(file));
+        }
+        return patrimoines;
     }
 }

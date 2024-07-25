@@ -9,6 +9,7 @@ import school.hei.patrimoine.modele.Patrimoine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -26,5 +27,10 @@ public class PatrimoineEndpoint {
     @PutMapping("/patrimoines")
     public Patrimoine createUpdate(@RequestBody Patrimoine patrimoine) throws IOException {
         return services.createUpdate(patrimoine);
+    }
+
+    @GetMapping("/patrimoines")
+    public List<Patrimoine> getAll() throws IOException {
+        return services.getAllPatrimoine();
     }
 }
