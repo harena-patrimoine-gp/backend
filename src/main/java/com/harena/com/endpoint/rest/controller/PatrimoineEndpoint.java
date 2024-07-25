@@ -19,7 +19,7 @@ public class PatrimoineEndpoint {
 
     @GetMapping("/patrimoines/{nom}")
     public Patrimoine getPatrimoineByName(@PathVariable String nom) throws IOException {
-        File file = bucketComponent.download(nom+".text");
+        File file = bucketComponent.download(nom+".txt");
         return serializationFunctions.decodeFile(file);
     }
 }
