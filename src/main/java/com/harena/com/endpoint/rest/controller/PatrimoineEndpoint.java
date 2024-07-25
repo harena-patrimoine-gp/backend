@@ -1,7 +1,7 @@
 package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
-import com.harena.com.services.SerializationFunctions;
+import com.harena.com.service.util.SerializationFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
