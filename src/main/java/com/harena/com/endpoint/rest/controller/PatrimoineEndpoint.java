@@ -1,12 +1,12 @@
 package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
-import com.harena.com.services.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import school.hei.patrimoine.modele.Patrimoine;
+import com.harena.com.service.utils.SerializationFunctions;
 
 import java.io.File;
 import java.io.IOException;
