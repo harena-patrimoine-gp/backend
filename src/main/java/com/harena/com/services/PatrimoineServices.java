@@ -1,5 +1,6 @@
 package com.harena.com.services;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.harena.com.file.BucketComponent;
 import lombok.AllArgsConstructor;
@@ -17,31 +18,30 @@ import java.util.Set;
 public class PatrimoineServices {
     private final BucketComponent bucketComponent;
     private final SerializationFunctions functions;
+    private final ObjectMapper mapper;
 
-    private Patrimoine updatePatrimoine(Patrimoine actual , Patrimoine change){
+    private Patrimoine updatePatrimoine(Patrimoine actual, Patrimoine change) {
         Patrimoine update = actual.projectionFuture(change.t());
-        Set<Possession> updatedPossession  = new HashSet<>(update.possessions());
+        Set<Possession> updatedPossession = new HashSet<>(update.possessions());
         updatedPossession.addAll(change.possessions());
         Patrimoine patrimoine = new Patrimoine(actual.nom(),
-                actual.possesseur() ,
+                actual.possesseur(),
                 change.t(),
                 updatedPossession);
         return patrimoine;
     }
 
-    public Patrimoine createUpdate (Patrimoine patrimoine) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        File file = bucketComponent.download(patrimoine.nom()+".txt");
-        if (file.exists()){
+    public Patrimoine createUpdate(Patrimoine patrimoine) throws IOException {
+        /*File file = bucketComponent.download(patrimoine.nom() + ".txt");
+        if (file.exists()) {
             Patrimoine actual = functions.decodeFile(file);
-            Patrimoine updated = updatePatrimoine(actual , patrimoine);
+            Patrimoine updated = updatePatrimoine(actual, patrimoine);
             File updatedToFile = functions.serialize(updated);
-            bucketComponent.upload(updatedToFile , updated.nom()+".txt");
+            bucketComponent.upload(updatedToFile , updated.nom() + ".txt");
             return updated;
-        }
-        
+        }*/
         File createdFile = functions.serialize(patrimoine);
-        bucketComponent.upload(createdFile , patrimoine.nom()+".txt");
+        bucketComponent.upload(createdFile, patrimoine.nom() + ".txt");
         return patrimoine;
     }
 }
