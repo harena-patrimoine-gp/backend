@@ -52,4 +52,12 @@ public class PatrimoineEndpointTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getPatrimoineByName_shouldReturn404WhenFileNotFound() throws Exception {
+        when(bucketComponent.download(anyString())).thenThrow(new IOException("File not found"));
+
+        mockMvc.perform(get("/patrimoines/{nom}", "NonExistentPatrimoine")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }
