@@ -1,5 +1,6 @@
 package com.harena.com.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.harena.com.file.BucketComponent;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class PatrimoineServices {
     }
 
     public Patrimoine createUpdate (Patrimoine patrimoine) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
         File file = bucketComponent.download(patrimoine.nom()+".txt");
         if (file.exists()){
             Patrimoine actual = functions.decodeFile(file);
@@ -37,6 +39,7 @@ public class PatrimoineServices {
             bucketComponent.upload(updatedToFile , updated.nom()+".txt");
             return updated;
         }
+        
         File createdFile = functions.serialize(patrimoine);
         bucketComponent.upload(createdFile , patrimoine.nom()+".txt");
         return patrimoine;

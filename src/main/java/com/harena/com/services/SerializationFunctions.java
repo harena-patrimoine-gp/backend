@@ -4,29 +4,17 @@ import com.harena.com.file.BucketComponent;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.hei.patrimoine.modele.Patrimoine;
-import school.hei.patrimoine.modele.Personne;
-import school.hei.patrimoine.modele.possession.Argent;
-import school.hei.patrimoine.modele.possession.FluxArgent;
-import school.hei.patrimoine.modele.possession.Materiel;
-import school.hei.patrimoine.modele.possession.Possession;
 import school.hei.patrimoine.serialisation.Serialiseur;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.time.LocalDate;
 import java.util.Base64;
-import java.util.Set;
-
 @Service
 public class SerializationFunctions {
-
+    Serialiseur<Patrimoine> serialiseur = new Serialiseur<>();
 
     public File serialize(Patrimoine patrimoine) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(patrimoine);
-        oos.flush();
-        String base64String = Base64.getEncoder().encodeToString(baos.toByteArray());
+        String base64String = serialiseur.serialise(patrimoine);
         return writeBase64ToTxt(base64String , patrimoine.nom()+".txt");
     }
 
@@ -43,18 +31,6 @@ public class SerializationFunctions {
 
     public Patrimoine decodeFile (File file) throws IOException {
         String encodedTxt = new String(Files.readAllBytes(file.toPath()));
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedTxt);
-
-        try(ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
-            ObjectInputStream ois = new ObjectInputStream(bais)){
-                return (Patrimoine) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return serialiseur.deserialise(encodedTxt);
     }
-
-
-
 }
-
-
