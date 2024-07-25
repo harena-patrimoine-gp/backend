@@ -82,7 +82,7 @@ task generateTsClient(type: org.openapitools.generator.gradle.plugin.tasks.Gener
     ]
     additionalProperties = [
             enumPropertyNaming: "original",
-            npmName           : "@harena/typescript-client",
+            npmName           : "@harena-gp/typescript-client",
             npmVersion        : project.properties["args"] ?: "latest"
     ]
 }
