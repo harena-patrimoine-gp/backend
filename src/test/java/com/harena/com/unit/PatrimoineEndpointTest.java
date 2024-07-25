@@ -60,4 +60,15 @@ public class PatrimoineEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void getPatrimoineByName_shouldReturn500WhenDecodingFails() throws Exception {
+        File file = new File("test.txt");
+        when(bucketComponent.download(anyString())).thenReturn(file);
+        when(serializationFunctions.decodeFile(file)).thenThrow(new IOException("Decoding failed"));
+
+        mockMvc.perform(get("/patrimoines/{nom}", "TestPatrimoine")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+    }
 }
