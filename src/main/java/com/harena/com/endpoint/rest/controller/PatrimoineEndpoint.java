@@ -1,7 +1,7 @@
 package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
-import com.harena.com.services.SerializationFunctions;
+import com.harena.com.services.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +19,7 @@ public class PatrimoineEndpoint {
 
     @GetMapping("/patrimoines/{nom}")
     public Patrimoine getPatrimoineByName(@PathVariable String nom) throws IOException {
-        File file = bucketComponent.download(nom+".text");
+        File file = bucketComponent.download(nom+".txt");
         return serializationFunctions.decodeFile(file);
     }
 }
