@@ -40,7 +40,7 @@ public class PatrimoineEndpointTest {
         mockMvc = MockMvcBuilders.standaloneSetup(patrimoineEndpoint).build();
     }
 
-   /* @Test
+   /*@Test
     public void getPatrimoineByName_shouldReturn200() throws Exception {
         File file = new File("test.txt");
         Patrimoine patrimoine = new Patrimoine();
