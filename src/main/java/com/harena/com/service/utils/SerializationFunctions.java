@@ -18,7 +18,7 @@ public class SerializationFunctions {
         return writeToTxt(base64String , patrimoine.nom()+".txt");
     }
 
-    private File writeToTxt(String base64String, String filePath) {
+    public File writeToTxt(String base64String, String filePath) {
         File file = new File(filePath);
         try (FileWriter writer = new FileWriter(filePath)) {
              writer.write(base64String);
