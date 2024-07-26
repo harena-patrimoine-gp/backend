@@ -2,73 +2,105 @@ package com.harena.com.unit;
 
 import com.harena.com.endpoint.rest.controller.PatrimoineEndpoint;
 import com.harena.com.file.BucketComponent;
+import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import school.hei.patrimoine.modele.Patrimoine;
+import school.hei.patrimoine.modele.Personne;
+import school.hei.patrimoine.modele.possession.Possession;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(PatrimoineEndpoint.class)
 public class PatrimoineEndpointTest {
 
-    @Mock
-    private SerializationFunctions serializationFunctions;
-
-    @Mock
-    private BucketComponent bucketComponent;
-
-    @InjectMocks
-    private PatrimoineEndpoint patrimoineEndpoint;
-
+    @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private SerializationFunctions serializationFunctions;
+
+    @MockBean
+    private BucketComponent bucketComponent;
+
+    @MockBean
+    private PatrimoineServices services;
+
+    private Patrimoine patrimoine;
+    private File tempFile;
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(patrimoineEndpoint).build();
+    public void setup() throws IOException {
+        Personne possesseur = new Personne("nomTest");
+
+        Set<Possession> possessions = new HashSet<>();
+
+        patrimoine = new Patrimoine("testNom", possesseur, LocalDate.now(), possessions);
+
+        tempFile = Files.createTempFile("test", ".txt").toFile();
+        Files.write(tempFile.toPath(), "test content".getBytes());
+
+        Mockito.when(bucketComponent.download(eq("testNom.txt"))).thenReturn(tempFile);
+        Mockito.when(serializationFunctions.decodeFile(any(File.class))).thenReturn(patrimoine);
+        Mockito.when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
+        Mockito.when(services.create(any(Patrimoine.class))).thenReturn(patrimoine);
+        Mockito.when(services.getAllPatrimoine()).thenReturn(Collections.singletonList(patrimoine));
     }
 
-   /*@Test
-    public void getPatrimoineByName_shouldReturn200() throws Exception {
-        File file = new File("test.txt");
-        Patrimoine patrimoine = new Patrimoine();
-        when(bucketComponent.download(anyString())).thenReturn(file);
-        when(serializationFunctions.decodeFile(file)).thenReturn(patrimoine);
-
-        mockMvc.perform(get("/patrimoines/{nom}", "TestPatrimoine")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }*/
 
     @Test
-    public void getPatrimoineByName_shouldReturn404WhenFileNotFound() throws Exception {
-        when(bucketComponent.download(anyString())).thenThrow(new IOException("File not found"));
-
-        mockMvc.perform(get("/patrimoines/{nom}", "NonExistentPatrimoine")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+    public void testGetPatrimoineByName() throws Exception {
+        mockMvc.perform(get("/patrimoines/testNom"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nom", is("testNom")));
     }
 
     @Test
-    public void getPatrimoineByName_shouldReturn500WhenDecodingFails() throws Exception {
-        File file = new File("test.txt");
-        when(bucketComponent.download(anyString())).thenReturn(file);
-        when(serializationFunctions.decodeFile(file)).thenThrow(new IOException("Decoding failed"));
+    public void testCreateUpdate() throws Exception {
+        String patrimoineJson = "{\"nom\": \"testNom\", \"possesseur\": {}, \"t\": \"2024-07-26\", \"possessions\": []}";
 
-        mockMvc.perform(get("/patrimoines/{nom}", "TestPatrimoine")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+        mockMvc.perform(put("/patrimoines")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(patrimoineJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nom", is("testNom")));
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        mockMvc.perform(get("/patrimoines/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nom", is("testNom")));
+    }
+
+    @Test
+    public void testUrl() throws Exception {
+        mockMvc.perform(get("/file"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("test content"));
     }
 }
+
+
+
