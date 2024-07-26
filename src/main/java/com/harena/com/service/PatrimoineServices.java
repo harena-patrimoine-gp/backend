@@ -21,7 +21,7 @@ public class PatrimoineServices {
     private final SerializationFunctions functions;
 
 
-    private Patrimoine updatePatrimoine(Patrimoine actual, Patrimoine change) {
+    public Patrimoine updatePatrimoine(Patrimoine actual, Patrimoine change) {
         Patrimoine update = actual.projectionFuture(change.t());
         Set<Possession> updatedPossession = new HashSet<>(update.possessions());
         updatedPossession.addAll(change.possessions());
