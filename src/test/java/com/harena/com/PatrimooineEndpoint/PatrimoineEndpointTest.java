@@ -1,4 +1,4 @@
-package com.harena.com.unit;
+package com.harena.com.PatrimooineEndpoint;
 
 import com.harena.com.endpoint.rest.controller.PatrimoineEndpoint;
 import com.harena.com.file.BucketComponent;
@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
@@ -74,6 +73,13 @@ public class PatrimoineEndpointTest {
         mockMvc.perform(get("/patrimoines/testNom"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom", is("testNom")));
+    }
+
+    @Test
+    public void testGetPatrimoineByName_inexistant_name() throws Exception {
+        mockMvc.perform(get("/patrimoines/random"))
+                .andExpect(status().isInternalServerError());
+
     }
 
     @Test
