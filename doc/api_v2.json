@@ -556,13 +556,6 @@
           "t": {
             "type": "string",
             "format": "date"
-          },
-          "possessions": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Possession"
-            }
           }
         }
       },

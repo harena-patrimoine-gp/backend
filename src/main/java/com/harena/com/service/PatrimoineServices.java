@@ -1,6 +1,7 @@
 package com.harena.com.service;
 
 import com.harena.com.file.BucketComponent;
+import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.model.exception.InternalServerErrorException;
 
 import com.harena.com.service.utils.SerializationFunctions;
@@ -20,12 +21,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class PatrimoineServices {
     private final BucketComponent bucketComponent;
     private final SerializationFunctions functions;
+
     private final String patrimoineListFile = "patrimoine_list.txt";
     private final String extensionFile = ".txt";
 
@@ -80,5 +83,29 @@ public class PatrimoineServices {
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
         bucketComponent.upload(functions.serialize(updated), actual.nom() + extensionFile);
         return possessionSet;
+    }
+    public Patrimoine findPatrimoineByName(String nom_patrimoine){
+        try {
+            File file = bucketComponent.download(nom_patrimoine + ".txt");
+            return functions.decodeFile(file);
+
+        } catch (BadRequestException | IOException e) {
+            throw new BadRequestException(nom_patrimoine + " does not exist");
+        }
+    }
+    public String deletePossession(String patrimoineName,String possessionName) throws IOException {
+
+
+        Patrimoine patrimoine=findPatrimoineByName(patrimoineName);
+        Set<Possession> possessions=patrimoine.possessions();
+        Set<Possession> filteredPossessions=possessions.stream().filter(
+                possession -> !possession.getNom().equals(possessionName)
+        ).collect(Collectors.toSet());
+        Patrimoine patrimoineWithDeletedPossession=new Patrimoine(
+                patrimoine.nom(),patrimoine.possesseur(),patrimoine.t(),filteredPossessions
+        );
+        create(patrimoineWithDeletedPossession);
+        return "la possession est supprimé avec succes";
+
     }
 }
