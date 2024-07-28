@@ -138,4 +138,22 @@ public class PatrimoineServicesTest {
 
         assertEquals(expectedPatrimoine, result);
     }
+
+    @Test
+    public void testGetPossessionByPatrimoine() throws IOException {
+        String patrimoineName = "testPatrimoine";
+        Personne possesseur = new Personne("nomTest");
+        Set<Possession> possessions = new HashSet<>();
+        possessions.add(new Materiel("testMateriel", LocalDate.now(), 1000, LocalDate.now(), 10.0));
+        Patrimoine patrimoine = new Patrimoine(patrimoineName, possesseur, LocalDate.now(), possessions);
+
+        when(bucketComponent.download(anyString())).thenReturn(patrimoineFile);
+        when(functions.decodeFile(patrimoineFile)).thenReturn(patrimoine);
+
+        Set<Possession> result = services.getPossessionByPatrimoine(patrimoineName);
+
+        assertEquals(possessions, result);
+        verify(bucketComponent).download(patrimoineName + extensionFile);
+        verify(functions).decodeFile(patrimoineFile);
+    }
 }
