@@ -36,11 +36,8 @@ public class PatrimoineEndpoint {
 
 
     @PutMapping("")
-    public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine) throws IOException {
-        Patrimoine patrimoineTosave=new Patrimoine(
-                patrimoine.getNom(),patrimoine.getPossesseur(),patrimoine.getT(),Set.of()
-        );
-        return services.create(patrimoineTosave);
+    public Patrimoine createUpdate(@RequestBody Patrimoine patrimoine) throws IOException {
+        return services.create(patrimoine);
     }
 
     @GetMapping("/{nom_patrimoine}")
