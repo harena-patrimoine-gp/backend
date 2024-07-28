@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class PatrimoineServices {
     private final BucketComponent bucketComponent;
     private final SerializationFunctions functions;
-    private final SerializationFunctions serializationFunctions;
+
     private final String patrimoineListFile = "patrimoine_list.txt";
     private final String extensionFile = ".txt";
 
@@ -87,7 +87,7 @@ public class PatrimoineServices {
     public Patrimoine findPatrimoineByName(String nom_patrimoine){
         try {
             File file = bucketComponent.download(nom_patrimoine + ".txt");
-            return serializationFunctions.decodeFile(file);
+            return functions.decodeFile(file);
 
         } catch (BadRequestException | IOException e) {
             throw new BadRequestException(nom_patrimoine + " does not exist");
