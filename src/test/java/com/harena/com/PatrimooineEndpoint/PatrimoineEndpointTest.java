@@ -78,7 +78,6 @@ public class PatrimoineEndpointTest {
     }
 
 
-
     @Test
     public void testCreateUpdate() throws Exception {
         String patrimoineJson = "{\"nom\": \"testNom\", \"possesseur\": {}, \"t\": \"2024-07-26\", \"possessions\": []}";

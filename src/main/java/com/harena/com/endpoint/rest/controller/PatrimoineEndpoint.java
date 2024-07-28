@@ -42,11 +42,11 @@ public class PatrimoineEndpoint {
     @GetMapping("/{nom_patrimoine}")
     public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine) throws IOException {
         try {
-        File file = bucketComponent.download(nom_patrimoine + ".txt");
-        return serializationFunctions.decodeFile(file);
+            File file = bucketComponent.download(nom_patrimoine + ".txt");
+            return serializationFunctions.decodeFile(file);
 
         } catch (BadRequestException e) {
-            throw new BadRequestException(nom_patrimoine+" does not exist");
+            throw new BadRequestException(nom_patrimoine + " does not exist");
         }
     }
 
