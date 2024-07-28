@@ -91,5 +91,11 @@ public class PatrimoineEndpoint {
     @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
     public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession) throws IOException {
         return services.deletePossession(nom_patrimoine,nom_possession);
+
+    }
+
+    @GetMapping("/file")
+    public File getFile() throws IOException {
+      return bucketComponent.download("patrimoine_list.txt");
     }
 }
