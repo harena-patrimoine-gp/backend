@@ -38,20 +38,14 @@ public class PatrimoineEndpoint {
     @PutMapping("")
     public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine) throws IOException {
         Patrimoine patrimoineTosave=new Patrimoine(
-                patrimoine.getNom(),patrimoine.getPersonne(),patrimoine.getT(),Set.of()
+                patrimoine.getNom(),patrimoine.getPossesseur(),patrimoine.getT(),Set.of()
         );
         return services.create(patrimoineTosave);
     }
 
     @GetMapping("/{nom_patrimoine}")
     public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine) throws IOException {
-        try {
-            File file = bucketComponent.download(nom_patrimoine + ".txt");
-            return serializationFunctions.decodeFile(file);
-
-        } catch (BadRequestException e) {
-            throw new BadRequestException(nom_patrimoine + " does not exist");
-        }
+      return services.findPatrimoineByName(nom_patrimoine);
     }
 
 
@@ -96,5 +90,8 @@ public class PatrimoineEndpoint {
     ) throws IOException {
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions);
     }
-
+    @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
+    public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession) throws IOException {
+        return services.deletePossession(nom_patrimoine,nom_possession);
+    }
 }
