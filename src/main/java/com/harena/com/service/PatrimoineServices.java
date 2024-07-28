@@ -39,7 +39,8 @@ public class PatrimoineServices {
             File patrimoineList = bucketComponent.download(patrimoineListFile);
             String list = new String(Files.readAllBytes(patrimoineList.toPath()));
             String updatedList = list + patrimoine.nom() + ";";
-            bucketComponent.upload(functions.writeToTxt(updatedList, patrimoineListFile), patrimoineListFile);
+            File updatedPatrimoineList = functions.writeToTxt(updatedList , patrimoineListFile);
+            bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
             File createdFile = functions.serialize(patrimoine);
             bucketComponent.upload(createdFile, patrimoine.nom() + extensionFile);
             Files.deleteIfExists(patrimoineList.toPath());
@@ -89,7 +90,8 @@ public class PatrimoineServices {
         possessionSet.addAll(actualPossessions);
         possessionSet.addAll(possessions);
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
-        bucketComponent.upload(functions.serialize(updated), actual.nom() + extensionFile);
+        File updatedPatrimoine = functions.serialize(updated);
+        bucketComponent.upload(updatedPatrimoine, actual.nom() + extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;
     }
