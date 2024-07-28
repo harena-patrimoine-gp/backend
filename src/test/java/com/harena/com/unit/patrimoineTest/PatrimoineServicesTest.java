@@ -1,10 +1,12 @@
-package com.harena.com.unit;
+package com.harena.com.unit.patrimoineTest;
 
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.file.BucketComponent;
 import com.harena.com.service.utils.SerializationFunctions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.Personne;
@@ -16,22 +18,29 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PatrimoineServicesTest {
-
-    private PatrimoineServices services;
+    @Mock
     private BucketComponent bucketComponent;
+    @Mock
     private SerializationFunctions functions;
+    @InjectMocks
+    private PatrimoineServices services;
+    private final String patrimoineListFileName = "patrimoine_list.txt";
+    private final String extensionFile = ".txt";
 
     @BeforeEach
     public void setup() {
         bucketComponent = Mockito.mock(BucketComponent.class);
         functions = Mockito.mock(SerializationFunctions.class);
         services = new PatrimoineServices(bucketComponent, functions);
+
     }
 
     @Test
@@ -40,18 +49,31 @@ public class PatrimoineServicesTest {
         Set<Possession> possessions = new HashSet<>();
         Patrimoine patrimoine = new Patrimoine("testNom", possesseur, LocalDate.now(), possessions);
 
-        File tempFile = Files.createTempFile("test", ".txt").toFile();
-        Files.write(tempFile.toPath(), "test content".getBytes());
+        File patrimoineListFile = new File(patrimoineListFileName);
+        Files.write(patrimoineListFile.toPath(), "existing content;".getBytes());
 
-        Mockito.when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
-        Mockito.when(functions.writeToTxt(any(String.class), eq("patrimoine_list.txt"))).thenReturn(tempFile);
-        Mockito.when(functions.serialize(any(Patrimoine.class))).thenReturn(tempFile);
-        Mockito.when(bucketComponent.upload(any(File.class), eq("patrimoine_list.txt"))).thenReturn(null);
-        Mockito.when(bucketComponent.upload(any(File.class), eq("testNom.txt"))).thenReturn(null);
+        File patrimoineFile = new File(patrimoine.nom() + extensionFile);
+        when(functions.serialize(patrimoine)).thenReturn(patrimoineFile);
+
+        when(bucketComponent.download(patrimoineListFileName)).thenReturn(patrimoineListFile);
+
+        when(functions.writeToTxt(anyString(), eq(patrimoineListFileName))).thenAnswer(invocation -> {
+            String content = invocation.getArgument(0);
+            Files.write(patrimoineListFile.toPath(), content.getBytes());
+            return patrimoineListFile;
+        });
 
         Patrimoine result = services.create(patrimoine);
 
-        assertEquals(patrimoine.nom(), result.nom());
+        verify(bucketComponent).upload(patrimoineFile, patrimoine.nom() + extensionFile);
+
+        String expectedList = "existing content;testNom;";
+        verify(bucketComponent).upload(any(File.class), eq(patrimoineListFileName));
+        String updatedListContent = new String(Files.readAllBytes(patrimoineListFile.toPath()));
+        assertEquals(expectedList, updatedListContent);
+
+        assertEquals(patrimoine, result);
+
     }
 
     @Test
@@ -70,8 +92,8 @@ public class PatrimoineServicesTest {
         File tempFile = Files.createTempFile("test", ".txt").toFile();
         Files.write(tempFile.toPath(), "test content".getBytes());
 
-        Mockito.when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
-        Mockito.when(functions.decodeFile(tempFile)).thenReturn(patrimoine);
+        when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
+        when(functions.decodeFile(tempFile)).thenReturn(patrimoine);
 
         assertEquals(1, services.getAllPatrimoine().size());
     }

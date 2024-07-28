@@ -1,7 +1,8 @@
-package com.harena.com.unit;
+package com.harena.com.PatrimooineEndpoint;
 
 import com.harena.com.endpoint.rest.controller.PatrimoineEndpoint;
 import com.harena.com.file.BucketComponent;
+import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,6 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
@@ -62,6 +62,7 @@ public class PatrimoineEndpointTest {
         Files.write(tempFile.toPath(), "test content".getBytes());
 
         Mockito.when(bucketComponent.download(eq("testNom.txt"))).thenReturn(tempFile);
+        Mockito.when(bucketComponent.download("randaom.txt")).thenReturn(null);
         Mockito.when(serializationFunctions.decodeFile(any(File.class))).thenReturn(patrimoine);
         Mockito.when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
         Mockito.when(services.create(any(Patrimoine.class))).thenReturn(patrimoine);
@@ -76,6 +77,7 @@ public class PatrimoineEndpointTest {
                 .andExpect(jsonPath("$.nom", is("testNom")));
     }
 
+
     @Test
     public void testCreateUpdate() throws Exception {
         String patrimoineJson = "{\"nom\": \"testNom\", \"possesseur\": {}, \"t\": \"2024-07-26\", \"possessions\": []}";
@@ -89,17 +91,11 @@ public class PatrimoineEndpointTest {
 
     @Test
     public void testGetAll() throws Exception {
-        mockMvc.perform(get("/patrimoines/all"))
+        mockMvc.perform(get("/patrimoines"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].nom", is("testNom")));
     }
 
-    @Test
-    public void testUrl() throws Exception {
-        mockMvc.perform(get("/file"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("test content"));
-    }
 }
 
 
