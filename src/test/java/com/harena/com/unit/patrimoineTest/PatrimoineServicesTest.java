@@ -123,4 +123,19 @@ public class PatrimoineServicesTest {
         verify(bucketComponent).upload(patrimoineFile, patrimoineName + extensionFile);
         assertEquals("la possession est supprimé avec succes", result);
     }
+
+    @Test
+    public void testFindPatrimoineByName() throws IOException {
+        String patrimoineName = "testPatrimoine";
+        Personne possesseur = new Personne("nomTest");
+        Set<Possession> possessions = new HashSet<>();
+        Patrimoine expectedPatrimoine = new Patrimoine(patrimoineName, possesseur, LocalDate.now(), possessions);
+
+        when(bucketComponent.download(anyString())).thenReturn(patrimoineFile);
+        when(functions.decodeFile(patrimoineFile)).thenReturn(expectedPatrimoine);
+
+        Patrimoine result = services.findPatrimoineByName(patrimoineName);
+
+        assertEquals(expectedPatrimoine, result);
+    }
 }
