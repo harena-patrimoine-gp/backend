@@ -6,6 +6,10 @@ import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.possession.Argent;
@@ -16,6 +20,7 @@ import school.hei.patrimoine.modele.possession.Possession;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,16 +52,19 @@ public class PatrimoineEndpoint {
 
 
     @GetMapping("/{nom_patrimoine}/graphe")
-    public File getPatrimoineFuture(
+    public ResponseEntity<byte[]> getPatrimoineFuture(
             @PathVariable String nom_patrimoine,
             @RequestParam LocalDate debut,
             @RequestParam LocalDate fin) throws IOException {
         if (debut == null) {
             LocalDate newDebut = LocalDate.now();
             LocalDate newFin = newDebut.plusDays(1);
-            return services.getPatrimoineFuture(nom_patrimoine, newDebut, newFin);
+            File file = services.getPatrimoineFuture(nom_patrimoine, newDebut, newFin);
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            return new ResponseEntity<>(bytes, HttpStatus.OK);
         }
-        return services.getPatrimoineFuture(nom_patrimoine, debut, fin);
+        File file =  services.getPatrimoineFuture(nom_patrimoine, debut, fin);
+        return new ResponseEntity<>(Files.readAllBytes(file.toPath()), HttpStatus.OK);
     }
 
     @GetMapping("/{nom_patrimoine}/possessions")

@@ -1,6 +1,7 @@
 package com.harena.com.service;
 
 import com.harena.com.file.BucketComponent;
+import com.harena.com.file.FileHash;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.model.exception.InternalServerErrorException;
 
@@ -39,11 +40,12 @@ public class PatrimoineServices {
             File patrimoineList = bucketComponent.download(patrimoineListFile);
             String list = new String(Files.readAllBytes(patrimoineList.toPath()));
             String updatedList = list + patrimoine.nom() + ";";
-            File updatedPatrimoineList = functions.writeToTxt(updatedList , patrimoineListFile);
+            File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);
             bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
             File createdFile = functions.serialize(patrimoine);
             bucketComponent.upload(createdFile, patrimoine.nom() + extensionFile);
             Files.deleteIfExists(patrimoineList.toPath());
+
             return patrimoine;
 
         } catch (InternalServerErrorException e) {
@@ -95,7 +97,8 @@ public class PatrimoineServices {
         Files.deleteIfExists(file.toPath());
         return possessionSet;
     }
-    public Patrimoine findPatrimoineByName(String nom_patrimoine){
+
+    public Patrimoine findPatrimoineByName(String nom_patrimoine) {
         try {
             File file = bucketComponent.download(nom_patrimoine + extensionFile);
             Patrimoine patrimoine = functions.decodeFile(file);
@@ -106,16 +109,17 @@ public class PatrimoineServices {
             throw new BadRequestException(nom_patrimoine + " does not exist");
         }
     }
-    public String deletePossession(String patrimoineName,String possessionName) throws IOException {
+
+    public String deletePossession(String patrimoineName, String possessionName) throws IOException {
 
 
-        Patrimoine patrimoine=findPatrimoineByName(patrimoineName);
-        Set<Possession> possessions=patrimoine.possessions();
-        Set<Possession> filteredPossessions=possessions.stream().filter(
+        Patrimoine patrimoine = findPatrimoineByName(patrimoineName);
+        Set<Possession> possessions = patrimoine.possessions();
+        Set<Possession> filteredPossessions = possessions.stream().filter(
                 possession -> !possession.getNom().equals(possessionName)
         ).collect(Collectors.toSet());
-        Patrimoine patrimoineWithDeletedPossession=new Patrimoine(
-                patrimoine.nom(),patrimoine.possesseur(),patrimoine.t(),filteredPossessions
+        Patrimoine patrimoineWithDeletedPossession = new Patrimoine(
+                patrimoine.nom(), patrimoine.possesseur(), patrimoine.t(), filteredPossessions
         );
         create(patrimoineWithDeletedPossession);
         return "la possession est supprimé avec succes";
