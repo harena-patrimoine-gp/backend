@@ -10,9 +10,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.Personne;
+import school.hei.patrimoine.modele.possession.Materiel;
 import school.hei.patrimoine.modele.possession.Possession;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -34,13 +36,16 @@ public class PatrimoineServicesTest {
     private PatrimoineServices services;
     private final String patrimoineListFileName = "patrimoine_list.txt";
     private final String extensionFile = ".txt";
+    private File patrimoineFile;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         bucketComponent = Mockito.mock(BucketComponent.class);
         functions = Mockito.mock(SerializationFunctions.class);
         services = new PatrimoineServices(bucketComponent, functions);
 
+        //creation de patimoine file pr simuler
+        patrimoineFile = Files.createTempFile("testPatrimoine", extensionFile).toFile();
     }
 
     @Test
@@ -96,5 +101,26 @@ public class PatrimoineServicesTest {
         when(functions.decodeFile(tempFile)).thenReturn(patrimoine);
 
         assertEquals(1, services.getAllPatrimoine().size());
+    }
+    @Test
+    public void testDeletePossession() throws IOException {
+        String patrimoineName = "testPatrimoine";
+        String possessionName = "testPossession";
+
+        Personne possesseur = new Personne("nomTest");
+        Possession possessionToDelete = new Materiel("testPossession", LocalDate.now(), 1000, LocalDate.now(), 10.0);
+        Set<Possession> possessions = new HashSet<>();
+        possessions.add(possessionToDelete);
+
+        Patrimoine patrimoine = new Patrimoine(patrimoineName, possesseur, LocalDate.now(), possessions);
+
+        when(bucketComponent.download(anyString())).thenReturn(patrimoineFile);
+        when(functions.decodeFile(patrimoineFile)).thenReturn(patrimoine);
+        when(functions.serialize(any(Patrimoine.class))).thenReturn(patrimoineFile);
+
+        String result = services.deletePossession(patrimoineName, possessionName);
+
+        verify(bucketComponent).upload(patrimoineFile, patrimoineName + extensionFile);
+        assertEquals("la possession est supprimé avec succes", result);
     }
 }
