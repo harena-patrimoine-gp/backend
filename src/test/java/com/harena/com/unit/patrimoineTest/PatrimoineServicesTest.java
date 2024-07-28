@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.Personne;
+import school.hei.patrimoine.modele.possession.Materiel;
 import school.hei.patrimoine.modele.possession.Possession;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.HashSet;
