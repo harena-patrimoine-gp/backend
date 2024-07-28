@@ -18,16 +18,16 @@ public class SerializationFunctions {
         return writeToTxt(base64String , patrimoine.nom()+".txt");
     }
 
-    public File writeToTxt(String base64String, String filePath) {
-        File file = new File(filePath);
-        try (FileWriter writer = new FileWriter(filePath)) {
-             writer.write(base64String);
-
+    public File writeToTxt(String base64String, String fileName) {
+        File file = new File("/tmp/" + fileName);
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(base64String);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return file;
     }
+
 
     public Patrimoine decodeFile (File file) throws IOException {
         String encodedTxt = new String(Files.readAllBytes(file.toPath()));
