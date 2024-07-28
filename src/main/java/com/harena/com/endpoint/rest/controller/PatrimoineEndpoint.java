@@ -90,6 +90,7 @@ public class PatrimoineEndpoint {
     ) throws IOException {
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions);
     }
+
     @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
     public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession) throws IOException {
         return services.deletePossession(nom_patrimoine,nom_possession);
