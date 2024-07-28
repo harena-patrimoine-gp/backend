@@ -19,6 +19,8 @@ import school.hei.patrimoine.visualisation.xchart.GrapheurEvolutionPatrimoine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,11 +36,13 @@ public class PatrimoineServices {
 
     public Patrimoine create(Patrimoine patrimoine) throws IOException {
         try {
-            String list = new String(Files.readAllBytes(bucketComponent.download(patrimoineListFile).toPath()));
+            File patrimoineList = bucketComponent.download(patrimoineListFile);
+            String list = new String(Files.readAllBytes(patrimoineList.toPath()));
             String updatedList = list + patrimoine.nom() + ";";
             bucketComponent.upload(functions.writeToTxt(updatedList, patrimoineListFile), patrimoineListFile);
             File createdFile = functions.serialize(patrimoine);
             bucketComponent.upload(createdFile, patrimoine.nom() + extensionFile);
+            Files.deleteIfExists(patrimoineList.toPath());
             return patrimoine;
 
         } catch (InternalServerErrorException e) {
@@ -48,13 +52,15 @@ public class PatrimoineServices {
 
     public List<Patrimoine> getAllPatrimoine() throws IOException {
         List<Patrimoine> patrimoines = new ArrayList<>();
-        File list = bucketComponent.download(patrimoineListFile);
-        String decodedList = new String(Files.readAllBytes(list.toPath()));
+        File listPatrimoine = bucketComponent.download(patrimoineListFile);
+        String decodedList = new String(Files.readAllBytes(listPatrimoine.toPath()));
         List<String> listPatrimoineFiles = Arrays.asList(decodedList.split(";"));
         for (String listPatrimoineFile : listPatrimoineFiles) {
             File file = bucketComponent.download(listPatrimoineFile + extensionFile);
             patrimoines.add(functions.decodeFile(file));
+            Files.delete(file.toPath());
         }
+        Files.deleteIfExists(listPatrimoine.toPath());
         return patrimoines;
     }
 
@@ -64,12 +70,14 @@ public class PatrimoineServices {
         Patrimoine futurPatrimoine = actual.projectionFuture(actual.t());
         EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(futurPatrimoine.nom() + "evolution", futurPatrimoine, debut, fin);
         GrapheurEvolutionPatrimoine grapheur = new GrapheurEvolutionPatrimoine();
+        Files.deleteIfExists(file.toPath());
         return grapheur.apply(evolutionPatrimoine);
     }
 
     public Set<Possession> getPossessionByPatrimoine(String nom_patrimoine) throws IOException {
         File file = bucketComponent.download(nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
+        Files.delete(file.toPath());
         return actual.possessions();
     }
 
@@ -82,12 +90,15 @@ public class PatrimoineServices {
         possessionSet.addAll(possessions);
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
         bucketComponent.upload(functions.serialize(updated), actual.nom() + extensionFile);
+        Files.deleteIfExists(file.toPath());
         return possessionSet;
     }
     public Patrimoine findPatrimoineByName(String nom_patrimoine){
         try {
-            File file = bucketComponent.download(nom_patrimoine + ".txt");
-            return functions.decodeFile(file);
+            File file = bucketComponent.download(nom_patrimoine + extensionFile);
+            Patrimoine patrimoine = functions.decodeFile(file);
+            Files.deleteIfExists(file.toPath());
+            return patrimoine;
 
         } catch (BadRequestException | IOException e) {
             throw new BadRequestException(nom_patrimoine + " does not exist");

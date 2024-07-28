@@ -36,11 +36,8 @@ public class PatrimoineEndpoint {
 
 
     @PutMapping("")
-    public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine) throws IOException {
-        Patrimoine patrimoineTosave=new Patrimoine(
-                patrimoine.getNom(),patrimoine.getPossesseur(),patrimoine.getT(),Set.of()
-        );
-        return services.create(patrimoineTosave);
+    public Patrimoine createUpdate(@RequestBody Patrimoine patrimoine) throws IOException {
+        return services.create(patrimoine);
     }
 
     @GetMapping("/{nom_patrimoine}")
@@ -94,5 +91,11 @@ public class PatrimoineEndpoint {
     @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
     public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession) throws IOException {
         return services.deletePossession(nom_patrimoine,nom_possession);
+
+    }
+
+    @GetMapping("/file")
+    public File getFile() throws IOException {
+      return bucketComponent.download("patrimoine_list.txt");
     }
 }
