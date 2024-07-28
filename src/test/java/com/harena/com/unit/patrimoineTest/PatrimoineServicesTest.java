@@ -97,4 +97,32 @@ public class PatrimoineServicesTest {
 
         assertEquals(1, services.getAllPatrimoine().size());
     }
+    @Test
+    public void testGetAllPatrimoineWithMultipleEntries() throws Exception {
+        Personne possesseur1 = new Personne("nomTest1");
+        Set<Possession> possessions1 = new HashSet<>();
+        Patrimoine patrimoine1 = new Patrimoine("testNom1", possesseur1, LocalDate.now(), possessions1);
+
+        Personne possesseur2 = new Personne("nomTest2");
+        Set<Possession> possessions2 = new HashSet<>();
+        Patrimoine patrimoine2 = new Patrimoine("testNom2", possesseur2, LocalDate.now(), possessions2);
+
+        File tempFile = Files.createTempFile("test", ".txt").toFile();
+        Files.write(tempFile.toPath(), "testNom1;testNom2;".getBytes());
+
+        when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
+        when(functions.decodeFile(any(File.class))).thenAnswer(invocation -> {
+            File file = invocation.getArgument(0);
+            String content = new String(Files.readAllBytes(file.toPath()));
+            if (content.contains("testNom1")) {
+                return patrimoine1;
+            } else if (content.contains("testNom2")) {
+                return patrimoine2;
+            }
+            return null;
+        });
+
+        assertEquals(2, services.getAllPatrimoine().size());
+    }
+
 }

@@ -21,16 +21,14 @@ jacoco {
 
 
 repositories {
-
     mavenCentral()
     maven {
         url 'https://harena-182574566954.d.codeartifact.eu-west-3.amazonaws.com/maven/harena-patrimoine/'
         credentials {
             username "aws"
-            password System.env.CODEARTIFACT_AUTH_TOKEN
+            password System.getenv('CODEARTIFACT_AUTH_TOKEN')
         }
     }
-
 }
 
 java {
