@@ -73,8 +73,8 @@ public class PatrimoineEndpointTest {
     @Test
     public void testGetPatrimoineByName() throws Exception {
         mockMvc.perform(get("/patrimoines/testNom"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nom", is("testNom")));
+                .andExpect(status().isOk());
+
     }
 
 

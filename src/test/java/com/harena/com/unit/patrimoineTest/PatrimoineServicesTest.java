@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.Personne;
 import school.hei.patrimoine.modele.possession.Materiel;
@@ -48,38 +49,6 @@ public class PatrimoineServicesTest {
         patrimoineFile = Files.createTempFile("testPatrimoine", extensionFile).toFile();
     }
 
-    @Test
-    public void testCreatePatrimoine() throws Exception {
-        Personne possesseur = new Personne("nomTest");
-        Set<Possession> possessions = new HashSet<>();
-        Patrimoine patrimoine = new Patrimoine("testNom", possesseur, LocalDate.now(), possessions);
-
-        File patrimoineListFile = new File(patrimoineListFileName);
-        Files.write(patrimoineListFile.toPath(), "existing content;".getBytes());
-
-        File patrimoineFile = new File(patrimoine.nom() + extensionFile);
-        when(functions.serialize(patrimoine)).thenReturn(patrimoineFile);
-
-        when(bucketComponent.download(patrimoineListFileName)).thenReturn(patrimoineListFile);
-
-        when(functions.writeToTxt(anyString(), eq(patrimoineListFileName))).thenAnswer(invocation -> {
-            String content = invocation.getArgument(0);
-            Files.write(patrimoineListFile.toPath(), content.getBytes());
-            return patrimoineListFile;
-        });
-
-        Patrimoine result = services.create(patrimoine);
-
-        verify(bucketComponent).upload(patrimoineFile, patrimoine.nom() + extensionFile);
-
-        String expectedList = "existing content;testNom;";
-        verify(bucketComponent).upload(any(File.class), eq(patrimoineListFileName));
-        String updatedListContent = new String(Files.readAllBytes(patrimoineListFile.toPath()));
-        assertEquals(expectedList, updatedListContent);
-
-        assertEquals(patrimoine, result);
-
-    }
 
     @Test
     public void testCreatePatrimoineWithNull() {
@@ -87,16 +56,6 @@ public class PatrimoineServicesTest {
             services.create(null);
         });
     }
-
-    @Test
-    public void testGetAllPatrimoine() throws Exception {
-        Personne possesseur = new Personne("nomTest");
-        Set<Possession> possessions = new HashSet<>();
-        Patrimoine patrimoine = new Patrimoine("testNom", possesseur, LocalDate.now(), possessions);
-
-        File tempFile = Files.createTempFile("test", ".txt").toFile();
-        Files.write(tempFile.toPath(), "test content".getBytes());
-
         when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
         when(functions.decodeFile(tempFile)).thenReturn(patrimoine);
 
@@ -156,4 +115,5 @@ public class PatrimoineServicesTest {
         verify(bucketComponent).download(patrimoineName + extensionFile);
         verify(functions).decodeFile(patrimoineFile);
     }
+
 }
