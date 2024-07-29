@@ -70,7 +70,7 @@ public class PatrimoineServices {
     public File getPatrimoineFuture(String nom_patrimoine, LocalDate debut, LocalDate fin) throws IOException {
         File file = bucketComponent.download(nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
-        Patrimoine futurPatrimoine = actual.projectionFuture(actual.t());
+        Patrimoine futurPatrimoine = actual.projectionFuture(fin);
         EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(futurPatrimoine.nom() + "evolution", futurPatrimoine, debut, fin);
         GrapheurEvolutionPatrimoine grapheur = new GrapheurEvolutionPatrimoine();
         Files.deleteIfExists(file.toPath());
