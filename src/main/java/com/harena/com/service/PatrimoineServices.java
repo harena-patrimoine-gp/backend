@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PatrimoineServices {
     private final BucketComponent bucketComponent;
-    private final SerializationFunctions functions;
+    private final SerializationFunctions<Patrimoine> functions;
 
     private final String patrimoineListFile = "patrimoine_list.txt";
     private final String extensionFile = ".txt";
@@ -42,7 +42,7 @@ public class PatrimoineServices {
             String updatedList = list + patrimoine.nom() + ";";
             File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);
             bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
-            File createdFile = functions.serialize(patrimoine);
+            File createdFile = functions.serialize(patrimoine,patrimoine.nom());
             bucketComponent.upload(createdFile, patrimoine.nom() + extensionFile);
             Files.deleteIfExists(patrimoineList.toPath());
 
@@ -92,7 +92,7 @@ public class PatrimoineServices {
         possessionSet.addAll(actualPossessions);
         possessionSet.addAll(possessions);
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
-        File updatedPatrimoine = functions.serialize(updated);
+        File updatedPatrimoine = functions.serialize(updated,updated.nom());
         bucketComponent.upload(updatedPatrimoine, actual.nom() + extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;

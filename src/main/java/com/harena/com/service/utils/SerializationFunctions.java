@@ -10,12 +10,12 @@ import java.nio.file.Files;
 import java.util.Base64;
 
 @Service
-public class SerializationFunctions {
-    private Serialiseur<Patrimoine> serialiseur = new Serialiseur<>();
+public class SerializationFunctions<T> {
+    private final Serialiseur<T> serialiseur = new Serialiseur<>();
 
-    public File serialize(Patrimoine patrimoine) throws IOException {
-        String base64String = serialiseur.serialise(patrimoine);
-        return writeToTxt(base64String , patrimoine.nom()+".txt");
+    public File serialize(T objectToSerialize,String fileName) throws IOException {
+        String base64String = serialiseur.serialise(objectToSerialize);
+        return writeToTxt(base64String , fileName+".txt");
     }
 
     public File writeToTxt(String base64String, String fileName) {
@@ -29,7 +29,7 @@ public class SerializationFunctions {
     }
 
 
-    public Patrimoine decodeFile (File file) throws IOException {
+    public T decodeFile (File file) throws IOException {
         String encodedTxt = new String(Files.readAllBytes(file.toPath()));
         return serialiseur.deserialise(encodedTxt);
     }
