@@ -1,4 +1,4 @@
 package com.harena.com.model;
 
-public class LoginRequest {
+public record LoginRequest(String email,String password) {
 }
