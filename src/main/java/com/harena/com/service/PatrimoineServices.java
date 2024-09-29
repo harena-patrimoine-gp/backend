@@ -35,16 +35,17 @@ public class PatrimoineServices {
     private final String patrimoineListFile = "patrimoine_list.txt";
     private final String extensionFile = ".txt";
 
-    public Patrimoine create(Patrimoine patrimoine) throws IOException {
+    public Patrimoine create(Patrimoine patrimoine,String userEmail) throws IOException {
         try {
-            File patrimoineList = bucketComponent.download(patrimoineListFile);
+          /*  File patrimoineList = bucketComponent.download(patrimoineListFile);
+
             String list = new String(Files.readAllBytes(patrimoineList.toPath()));
             String updatedList = list + patrimoine.nom() + ";";
-            File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);
-            bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
+            File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);*/
+          //  bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
             File createdFile = functions.serialize(patrimoine,patrimoine.nom());
-            bucketComponent.upload(createdFile, patrimoine.nom() + extensionFile);
-            Files.deleteIfExists(patrimoineList.toPath());
+            bucketComponent.upload(createdFile, userEmail+"/"+patrimoine.nom() + extensionFile);
+            //Files.deleteIfExists(patrimoineList.toPath());
 
             return patrimoine;
 
@@ -77,17 +78,17 @@ public class PatrimoineServices {
         return grapheur.apply(evolutionPatrimoine);
     }
 
-    public Set<Possession> getPossessionByPatrimoine(String nom_patrimoine) throws IOException {
-        File file = bucketComponent.download(nom_patrimoine + extensionFile);
+    public Set<Possession> getPossessionByPatrimoine(String nom_patrimoine,String userEmail) throws IOException {
+        File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Files.delete(file.toPath());
         return actual.possessions();
     }
 
-    public <T extends Possession> Set<Possession> crupdatePossessionByPatrimoine(String nom_patrimoine, Set<T> possessions) throws IOException {
+    public <T extends Possession> Set<Possession> crupdatePossessionByPatrimoine(String nom_patrimoine, Set<T> possessions,String userEmail) throws IOException {
         File file = bucketComponent.download(nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
-        Set<Possession> actualPossessions = getPossessionByPatrimoine(nom_patrimoine);
+        Set<Possession> actualPossessions = getPossessionByPatrimoine(nom_patrimoine,userEmail);
         Set<Possession> possessionSet = new HashSet<>();
         possessionSet.addAll(actualPossessions);
         possessionSet.addAll(possessions);
@@ -98,9 +99,9 @@ public class PatrimoineServices {
         return possessionSet;
     }
 
-    public Patrimoine findPatrimoineByName(String nom_patrimoine) {
+    public Patrimoine findPatrimoineByName(String nom_patrimoine,String userEmail) {
         try {
-            File file = bucketComponent.download(nom_patrimoine + extensionFile);
+            File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
             Patrimoine patrimoine = functions.decodeFile(file);
             Files.deleteIfExists(file.toPath());
             return patrimoine;
@@ -110,10 +111,10 @@ public class PatrimoineServices {
         }
     }
 
-    public String deletePossession(String patrimoineName, String possessionName) throws IOException {
+    public String deletePossession(String patrimoineName, String possessionName,String userEmail) throws IOException {
 
 
-        Patrimoine patrimoine = findPatrimoineByName(patrimoineName);
+        Patrimoine patrimoine = findPatrimoineByName(patrimoineName,userEmail);
         Set<Possession> possessions = patrimoine.possessions();
         Set<Possession> filteredPossessions = possessions.stream().filter(
                 possession -> !possession.getNom().equals(possessionName)
@@ -121,7 +122,7 @@ public class PatrimoineServices {
         Patrimoine patrimoineWithDeletedPossession = new Patrimoine(
                 patrimoine.nom(), patrimoine.possesseur(), patrimoine.t(), filteredPossessions
         );
-        create(patrimoineWithDeletedPossession);
+        create(patrimoineWithDeletedPossession,patrimoine.nom());
         return "la possession est supprimé avec succes";
 
     }

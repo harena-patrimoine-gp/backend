@@ -41,15 +41,15 @@ public class PatrimoineEndpoint {
 
 
     @PutMapping("")
-    public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine) throws IOException {
+    public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine,@RequestParam String email) throws IOException {
         Patrimoine patrimoineToSave=new Patrimoine(patrimoine.getNom(),patrimoine.getPossesseur(),patrimoine.getT(),Set.of());
 
-        return services.create(patrimoineToSave);
+        return services.create(patrimoineToSave,email);
     }
 
     @GetMapping("/{nom_patrimoine}")
-    public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine) throws IOException {
-      return services.findPatrimoineByName(nom_patrimoine);
+    public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine,@RequestParam String email) throws IOException {
+      return services.findPatrimoineByName(nom_patrimoine,email);
     }
 
 
@@ -70,37 +70,42 @@ public class PatrimoineEndpoint {
     }
 
     @GetMapping("/{nom_patrimoine}/possessions")
-    public Set<Possession> getAllPossessionByPatrimoine(@PathVariable String nom_patrimoine) throws IOException {
-        return services.getPossessionByPatrimoine(nom_patrimoine);
+    public Set<Possession> getAllPossessionByPatrimoine(@PathVariable String nom_patrimoine,@RequestParam String email) throws IOException {
+        return services.getPossessionByPatrimoine(nom_patrimoine,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/materiel")
     public Set<Possession> crupdateMateriel(
             @PathVariable String nom_patrimoine,
-            @RequestBody Set<Materiel> possessions
+            @RequestBody Set<Materiel> possessions,
+            @RequestParam String email
     ) throws IOException {
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions);
+        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/argent")
     public Set<Possession> crupdateArgent(
             @PathVariable String nom_patrimoine,
-            @RequestBody Set<Argent> possessions
+            @RequestBody Set<Argent> possessions,
+            @RequestParam String email
     ) throws IOException {
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions);
+        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/fluxArgent")
     public Set<Possession> crupdateFluxArgent(
             @PathVariable String nom_patrimoine,
-            @RequestBody Set<FluxArgent> possessions
+            @RequestBody Set<FluxArgent> possessions,
+            @RequestParam String email
     ) throws IOException {
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions);
+        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
     @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
-    public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession) throws IOException {
-        return services.deletePossession(nom_patrimoine,nom_possession);
+    public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession,
+     @RequestParam String email
+    ) throws IOException {
+        return services.deletePossession(nom_patrimoine,nom_possession,email);
 
     }
 

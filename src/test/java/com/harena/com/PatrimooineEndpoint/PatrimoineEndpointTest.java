@@ -2,7 +2,6 @@ package com.harena.com.PatrimooineEndpoint;
 
 import com.harena.com.endpoint.rest.controller.PatrimoineEndpoint;
 import com.harena.com.file.BucketComponent;
-import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
 import org.junit.jupiter.api.BeforeEach;
