@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 
 @Service
-@AllArgsConstructor
 public class UserService {
-    @Autowired
     private final BucketComponent bucketComponent;
     private final SerializationFunctions<User> serializationFunctions;
+
+    public UserService(BucketComponent bucketComponent, SerializationFunctions<User> serializationFunctions) {
+        this.bucketComponent = bucketComponent;
+        this.serializationFunctions = serializationFunctions;
+    }
 
     public User registerUser(User user){
     try {

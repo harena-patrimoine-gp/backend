@@ -64,7 +64,7 @@ public class PatrimoineEndpointTest {
         Mockito.when(bucketComponent.download("randaom.txt")).thenReturn(null);
         Mockito.when(serializationFunctions.decodeFile(any(File.class))).thenReturn(patrimoine);
         Mockito.when(bucketComponent.download(eq("patrimoine_list.txt"))).thenReturn(tempFile);
-        Mockito.when(services.create(any(Patrimoine.class))).thenReturn(patrimoine);
+        Mockito.when(services.create(any(Patrimoine.class),"test")).thenReturn(patrimoine);
         Mockito.when(services.getAllPatrimoine()).thenReturn(Collections.singletonList(patrimoine));
     }
 
