@@ -56,16 +56,17 @@ public class PatrimoineEndpoint {
     @GetMapping("/{nom_patrimoine}/graphe")
     public ResponseEntity<byte[]> getPatrimoineFuture(
             @PathVariable String nom_patrimoine,
+            @RequestParam String email,
             @RequestParam LocalDate debut,
             @RequestParam LocalDate fin) throws IOException {
         if (debut == null) {
             LocalDate newDebut = LocalDate.now();
             LocalDate newFin = newDebut.plusDays(1);
-            File file = services.getPatrimoineFuture(nom_patrimoine, newDebut, newFin);
+            File file = services.getPatrimoineFuture(nom_patrimoine,email, newDebut, newFin);
             byte[] bytes = Files.readAllBytes(file.toPath());
             return new ResponseEntity<>(bytes, HttpStatus.OK);
         }
-        File file =  services.getPatrimoineFuture(nom_patrimoine, debut, fin);
+        File file =  services.getPatrimoineFuture(nom_patrimoine, email,debut, fin);
         return new ResponseEntity<>(Files.readAllBytes(file.toPath()), HttpStatus.OK);
     }
 

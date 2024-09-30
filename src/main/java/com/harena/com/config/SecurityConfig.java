@@ -70,7 +70,7 @@ public class SecurityConfig  {
                                 .requestMatchers("/token").permitAll()
                                 .requestMatchers("/register").permitAll()
                                 .requestMatchers("/user").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
 
                         )
                 .oauth2ResourceServer(oauth2->oauth2.jwt(Customizer.withDefaults()))

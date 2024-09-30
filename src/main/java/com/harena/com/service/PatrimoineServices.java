@@ -68,8 +68,8 @@ public class PatrimoineServices {
         return patrimoines;
     }
 
-    public File getPatrimoineFuture(String nom_patrimoine, LocalDate debut, LocalDate fin) throws IOException {
-        File file = bucketComponent.download(nom_patrimoine + extensionFile);
+    public File getPatrimoineFuture(String nom_patrimoine,String userEmail, LocalDate debut, LocalDate fin) throws IOException {
+        File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Patrimoine futurPatrimoine = actual.projectionFuture(fin);
         EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(futurPatrimoine.nom() + "evolution", futurPatrimoine, debut, fin);
@@ -86,7 +86,7 @@ public class PatrimoineServices {
     }
 
     public <T extends Possession> Set<Possession> crupdatePossessionByPatrimoine(String nom_patrimoine, Set<T> possessions,String userEmail) throws IOException {
-        File file = bucketComponent.download(nom_patrimoine + extensionFile);
+        File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Set<Possession> actualPossessions = getPossessionByPatrimoine(nom_patrimoine,userEmail);
         Set<Possession> possessionSet = new HashSet<>();
@@ -94,7 +94,7 @@ public class PatrimoineServices {
         possessionSet.addAll(possessions);
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
         File updatedPatrimoine = functions.serialize(updated,updated.nom());
-        bucketComponent.upload(updatedPatrimoine, actual.nom() + extensionFile);
+        bucketComponent.upload(updatedPatrimoine, userEmail+"/"+actual.nom() + extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;
     }
