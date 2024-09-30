@@ -5,6 +5,7 @@ import com.harena.com.model.User;
 import com.harena.com.service.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.io.File;
 public class UserService {
     private final BucketComponent bucketComponent;
     private final SerializationFunctions<User> serializationFunctions;
+
 
     public UserService(BucketComponent bucketComponent, SerializationFunctions<User> serializationFunctions) {
         this.bucketComponent = bucketComponent;
@@ -25,6 +27,7 @@ public class UserService {
         if(file.exists()){
             throw new RuntimeException();
         }*/
+
        File serializedUser= serializationFunctions.serialize(user,"credential");
        String directory= user.email();
         bucketComponent.upload(serializedUser, directory+"/credential.txt");
