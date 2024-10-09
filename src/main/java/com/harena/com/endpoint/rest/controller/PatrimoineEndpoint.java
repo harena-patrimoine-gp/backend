@@ -2,6 +2,7 @@ package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
 
+import com.harena.com.model.Patrimoine;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
@@ -48,7 +49,7 @@ public class PatrimoineEndpoint {
     }
 
     @GetMapping("/patrimoine")
-    public Patrimoine getPatrimoineByDate(@RequestParam String email,@RequestParam LocalDate date) throws IOException {
+    public Patrimoine getPatrimoineByDate(@RequestParam String email, @RequestParam LocalDate date) throws IOException {
       return services.findPatrimoine(email).projectionFuture(date);
     }
 
