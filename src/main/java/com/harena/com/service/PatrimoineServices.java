@@ -44,7 +44,7 @@ public class PatrimoineServices {
             File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);*/
           //  bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
             File createdFile = functions.serialize(patrimoine,"patrimoine");
-            bucketComponent.upload(createdFile, userEmail+"/"+patrimoine.nom() + extensionFile);
+            bucketComponent.upload(createdFile, userEmail+"/patrimoine" + extensionFile);
             //Files.deleteIfExists(patrimoineList.toPath());
 
             return patrimoine;

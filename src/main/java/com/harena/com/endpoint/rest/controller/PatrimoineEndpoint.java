@@ -2,7 +2,6 @@ package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
 
-import com.harena.com.model.Patrimoine;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
