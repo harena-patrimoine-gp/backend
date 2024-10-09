@@ -47,9 +47,9 @@ public class PatrimoineEndpoint {
         return services.create(patrimoineToSave,email);
     }
 
-    @GetMapping("/{nom_patrimoine}")
-    public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine,@RequestParam String email,@RequestParam LocalDate date) throws IOException {
-      return services.findPatrimoineByName(nom_patrimoine,email);
+    @GetMapping("/patrimoine")
+    public Patrimoine getPatrimoineByDate(@RequestParam String email,@RequestParam LocalDate date) throws IOException {
+      return services.findPatrimoine(email).projectionFuture(date);
     }
 
 
@@ -103,10 +103,10 @@ public class PatrimoineEndpoint {
     }
 
     @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
-    public String deletePatrimoine(@PathVariable String nom_patrimoine,@PathVariable String nom_possession,
+    public String deletePatrimoine(@PathVariable String nom_possession,
      @RequestParam String email
     ) throws IOException {
-        return services.deletePossession(nom_patrimoine,nom_possession,email);
+        return services.deletePossession(nom_possession,email);
 
     }
 

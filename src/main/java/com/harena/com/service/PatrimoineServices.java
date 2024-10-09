@@ -99,22 +99,22 @@ public class PatrimoineServices {
         return possessionSet;
     }
 
-    public Patrimoine findPatrimoineByName(String nom_patrimoine,String userEmail) {
+    public Patrimoine findPatrimoine(String userEmail) {
         try {
-            File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
+            File file = bucketComponent.download(userEmail+"/patrimoine"+ extensionFile);
             Patrimoine patrimoine = functions.decodeFile(file);
             Files.deleteIfExists(file.toPath());
             return patrimoine;
 
         } catch (BadRequestException | IOException e) {
-            throw new BadRequestException(nom_patrimoine + " does not exist");
+            throw new BadRequestException( "patrimony does not exist");
         }
     }
 
-    public String deletePossession(String patrimoineName, String possessionName,String userEmail) throws IOException {
+    public String deletePossession( String possessionName,String userEmail) throws IOException {
 
 
-        Patrimoine patrimoine = findPatrimoineByName(patrimoineName,userEmail);
+        Patrimoine patrimoine = findPatrimoine(userEmail);
         Set<Possession> possessions = patrimoine.possessions();
         Set<Possession> filteredPossessions = possessions.stream().filter(
                 possession -> !possession.getNom().equals(possessionName)
