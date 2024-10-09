@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.hei.patrimoine.modele.Patrimoine;
+import school.hei.patrimoine.modele.Personne;
 import school.hei.patrimoine.modele.possession.Argent;
 import school.hei.patrimoine.modele.possession.FluxArgent;
 import school.hei.patrimoine.modele.possession.Materiel;
@@ -30,7 +31,6 @@ import java.util.Set;
 @RequestMapping("/patrimoines")
 @AllArgsConstructor
 public class PatrimoineEndpoint {
-    private final SerializationFunctions serializationFunctions;
     private final BucketComponent bucketComponent;
     private final PatrimoineServices services;
 
@@ -42,13 +42,13 @@ public class PatrimoineEndpoint {
 
     @PutMapping("")
     public Patrimoine createUpdate(@RequestBody com.harena.com.model.Patrimoine patrimoine,@RequestParam String email) throws IOException {
-        Patrimoine patrimoineToSave=new Patrimoine(patrimoine.getNom(),patrimoine.getPossesseur(),patrimoine.getT(),Set.of());
+        Patrimoine patrimoineToSave=new Patrimoine(patrimoine.getNom(),new Personne(email),patrimoine.getT(),Set.of());
 
         return services.create(patrimoineToSave,email);
     }
 
     @GetMapping("/{nom_patrimoine}")
-    public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine,@RequestParam String email) throws IOException {
+    public Patrimoine getPatrimoineByName(@PathVariable String nom_patrimoine,@RequestParam String email,@RequestParam LocalDate date) throws IOException {
       return services.findPatrimoineByName(nom_patrimoine,email);
     }
 

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Data
 public class Patrimoine implements Serializable {
     private  String nom;
-    private Personne possesseur;
     private LocalDate t;
 
 }

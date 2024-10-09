@@ -43,7 +43,7 @@ public class PatrimoineServices {
             String updatedList = list + patrimoine.nom() + ";";
             File updatedPatrimoineList = functions.writeToTxt(updatedList, patrimoineListFile);*/
           //  bucketComponent.upload(updatedPatrimoineList, patrimoineListFile);
-            File createdFile = functions.serialize(patrimoine,patrimoine.nom());
+            File createdFile = functions.serialize(patrimoine,"patrimoine");
             bucketComponent.upload(createdFile, userEmail+"/"+patrimoine.nom() + extensionFile);
             //Files.deleteIfExists(patrimoineList.toPath());
 
