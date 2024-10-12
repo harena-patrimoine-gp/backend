@@ -94,7 +94,7 @@ public class PatrimoineServices {
         possessionSet.addAll(possessions);
         Patrimoine updated = new Patrimoine(nom_patrimoine, actual.possesseur(), actual.t(), possessionSet);
         File updatedPatrimoine = functions.serialize(updated,updated.nom());
-        bucketComponent.upload(updatedPatrimoine, userEmail+"/"+actual.nom() + extensionFile);
+        bucketComponent.upload(updatedPatrimoine, userEmail+"/"+nom_patrimoine+ extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;
     }
