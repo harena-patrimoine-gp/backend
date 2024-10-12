@@ -122,7 +122,7 @@ public class PatrimoineServices {
         Patrimoine patrimoineWithDeletedPossession = new Patrimoine(
                 patrimoine.nom(), patrimoine.possesseur(), patrimoine.t(), filteredPossessions
         );
-        create(patrimoineWithDeletedPossession,patrimoine.nom());
+        create(patrimoineWithDeletedPossession,userEmail);
         return "la possession est supprimé avec succes";
 
     }

@@ -102,7 +102,7 @@ public class PatrimoineEndpoint {
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
-    @DeleteMapping("/{nom_patrimoine}/possessions/{nom_possession}")
+    @DeleteMapping("/possessions/{nom_possession}")
     public String deletePatrimoine(@PathVariable String nom_possession,
      @RequestParam String email
     ) throws IOException {

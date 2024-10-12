@@ -5,6 +5,9 @@ import com.harena.com.service.RegisterService;
 import com.harena.com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import school.hei.patrimoine.modele.possession.Argent;
+
+import java.time.LocalDate;
 
 @RestController
 
@@ -21,5 +24,8 @@ public class UserController {
     public User getUserByEmail(@RequestParam String email){
         return  userService.findUserByEmail(email);
     }
+
+
+
 
 }
