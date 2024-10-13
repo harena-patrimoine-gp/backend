@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.modele.Personne;
 import school.hei.patrimoine.modele.possession.Argent;
@@ -89,6 +90,7 @@ public class PatrimoineEndpoint {
             @PathVariable String nom_patrimoine,
             @RequestBody Set<Argent> possessions,
             @RequestParam String email
+
     ) throws IOException {
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
