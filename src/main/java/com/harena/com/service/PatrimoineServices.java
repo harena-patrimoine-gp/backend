@@ -9,6 +9,7 @@ import com.harena.com.service.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.EvolutionPatrimoine;
 import school.hei.patrimoine.modele.Patrimoine;
 
@@ -86,6 +87,7 @@ public class PatrimoineServices {
     }
 
     public <T extends Possession> Set<Possession> crupdatePossessionByPatrimoine(String nom_patrimoine, Set<T> possessions,String userEmail) throws IOException {
+
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Set<Possession> actualPossessions = getPossessionByPatrimoine(nom_patrimoine,userEmail);
@@ -97,6 +99,21 @@ public class PatrimoineServices {
         bucketComponent.upload(updatedPatrimoine, userEmail+"/"+nom_patrimoine+ extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;
+    }
+
+    private Devise mapDevise(String devise){
+        if (devise.equalsIgnoreCase("mga")) {
+            return Devise.MGA;
+        } else if (devise.equalsIgnoreCase("eur")) {
+            return Devise.EUR;
+
+        }
+        else if(devise.equalsIgnoreCase("cad"))
+            return Devise.CAD;
+        else {
+            return null;
+        }
+
     }
 
     public Patrimoine findPatrimoine(String userEmail) {
