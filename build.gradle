@@ -24,7 +24,7 @@ repositories {
 
     mavenCentral()
     maven {
-        url 'https://harena-182574566954.d.codeartifact.eu-west-3.amazonaws.com/maven/harena-patrimoine/'
+        url 'https://harena-182574566954.d.codeartifact.eu-west-3.amazonaws.com/maven/harena-v2/'
         credentials {
             username "aws"
             password System.env.CODEARTIFACT_AUTH_TOKEN

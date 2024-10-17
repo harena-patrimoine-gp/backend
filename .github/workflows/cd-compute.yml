@@ -45,7 +45,7 @@ jobs:
         run: |
           printf "tasks.named('test').configure {\n    enabled = false\n}" >> build.gradle
       - name: Export CodeArtifact token
-        run: echo "CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain harena --domain-owner 182574566954 --region eu-west-3 --query authorizationToken --output text)" >> $GITHUB_ENV
+        run: echo "CODEARTIFACT_AUTH_TOKEN=$(export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain harena --domain-owner 182574566954 --region eu-west-3 --query authorizationToken --output text`)" >> $GITHUB_ENV
 
       - run: sam build
 
