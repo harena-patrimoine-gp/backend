@@ -107,7 +107,7 @@ public class PatrimoineServices {
     }
 
     public FluxArgent saveFluxArgent(String userEmail, String nomPossession, FluxArgentRequest fluxArgent) throws IOException {
-        File file = bucketComponent.download(userEmail+"/possession" + extensionFile);
+        File file = bucketComponent.download(userEmail+"/patrimoine" + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Argent argent= (Argent) actual.possessionParNom(nomPossession);
         FluxArgent fluxArgentToSave=new FluxArgent(
