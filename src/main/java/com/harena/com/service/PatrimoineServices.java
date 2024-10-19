@@ -2,6 +2,7 @@ package com.harena.com.service;
 
 import com.harena.com.file.BucketComponent;
 import com.harena.com.file.FileHash;
+import com.harena.com.model.FluxArgentRequest;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.model.exception.InternalServerErrorException;
 
@@ -13,6 +14,8 @@ import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.EvolutionPatrimoine;
 import school.hei.patrimoine.modele.Patrimoine;
 
+import school.hei.patrimoine.modele.possession.Argent;
+import school.hei.patrimoine.modele.possession.FluxArgent;
 import school.hei.patrimoine.modele.possession.Possession;
 
 import school.hei.patrimoine.visualisation.xchart.GrapheurEvolutionPatrimoine;
@@ -86,6 +89,8 @@ public class PatrimoineServices {
         return actual.possessions();
     }
 
+
+
     public <T extends Possession> Set<Possession> crupdatePossessionByPatrimoine(String nom_patrimoine, Set<T> possessions,String userEmail) throws IOException {
 
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
@@ -99,6 +104,26 @@ public class PatrimoineServices {
         bucketComponent.upload(updatedPatrimoine, userEmail+"/"+nom_patrimoine+ extensionFile);
         Files.deleteIfExists(file.toPath());
         return possessionSet;
+    }
+
+    public FluxArgent saveFluxArgent(String userEmail, String nomPossession, FluxArgentRequest fluxArgent) throws IOException {
+        File file = bucketComponent.download(userEmail+"/possession" + extensionFile);
+        Patrimoine actual = functions.decodeFile(file);
+        Argent argent= (Argent) actual.possessionParNom(nomPossession);
+        FluxArgent fluxArgentToSave=new FluxArgent(
+                fluxArgent.getNom(),argent,fluxArgent.getDebut(),fluxArgent.getFin(),fluxArgent.getFluxMensuel(),fluxArgent.getDateOperation()
+        );
+
+        deletePossession(nomPossession,userEmail);
+        Set<Possession> newPossessions=Set.of(fluxArgentToSave,argent);
+
+        actual.possessions().add(argent);
+        crupdatePossessionByPatrimoine("patrimoine",newPossessions,userEmail);
+
+
+
+
+        return fluxArgentToSave;
     }
 
     private Devise mapDevise(String devise){
@@ -127,6 +152,7 @@ public class PatrimoineServices {
             throw new BadRequestException( "patrimony does not exist");
         }
     }
+
 
     public String deletePossession( String possessionName,String userEmail) throws IOException {
 

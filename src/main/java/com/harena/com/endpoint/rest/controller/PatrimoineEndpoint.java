@@ -2,6 +2,7 @@ package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
 
+import com.harena.com.model.FluxArgentRequest;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.service.PatrimoineServices;
 import com.harena.com.service.utils.SerializationFunctions;
@@ -96,14 +97,14 @@ public class PatrimoineEndpoint {
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
-    @PutMapping("/{nom_patrimoine}/possessions/fluxArgent")
-    public Set<Possession> crupdateFluxArgent(
-            @PathVariable String nom_patrimoine,
-            @RequestBody Set<FluxArgent> possessions,
+    @PutMapping("/possessions/fluxArgent")
+    public FluxArgent crupdateFluxArgent(
+            @RequestBody FluxArgentRequest fluxArgentRequest,
+            @RequestParam String argent ,
             @RequestParam String email
     ) throws IOException {
 
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
+        return services.saveFluxArgent(email,argent,fluxArgentRequest);
 
     }
 
