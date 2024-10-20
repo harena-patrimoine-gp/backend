@@ -84,11 +84,11 @@ public class PatrimoineEndpoint {
     ) throws IOException {
         Set<Possession> possessions=new HashSet<>();
         if(materielRequest.getDevise().equals("MGA"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.MGA));
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.MGA));
         if(materielRequest.getDevise().equals("EUR"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.EUR));
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.EUR));
         if(materielRequest.getDevise().equals("CAD"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.CAD));
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.CAD));
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
