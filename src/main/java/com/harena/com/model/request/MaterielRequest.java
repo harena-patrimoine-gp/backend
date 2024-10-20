@@ -13,9 +13,9 @@ import java.time.LocalDate;
 public class MaterielRequest extends PossessionRequest{
     private  LocalDate dateAcquisition;
     private  int tauxDAppreciationAnuelle;
-    public MaterielRequest(String nom, LocalDate date,LocalDate dateAquisition,int valeurComptable,int tauxDApreciationAnuelle,String devise){
+    public MaterielRequest(String nom, LocalDate date,LocalDate dateAcquisition,int valeurComptable,int tauxDApreciationAnuelle,String devise){
         super(nom,date,valeurComptable,devise);
-        this.dateAcquisition=dateAquisition;
+        this.dateAcquisition=dateAcquisition;
         this.tauxDAppreciationAnuelle=tauxDApreciationAnuelle;
 
     }
