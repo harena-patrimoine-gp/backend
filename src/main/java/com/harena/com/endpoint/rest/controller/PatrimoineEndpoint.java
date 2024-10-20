@@ -82,12 +82,12 @@ public class PatrimoineEndpoint {
             @RequestBody MaterielRequest materielRequest,
             @RequestParam String email
     ) throws IOException {
-        Set<Possession> possessions=new HashSet<>();
+        Set<Materiel> possessions=new HashSet<>();
         Devise devise =stringToDevise(materielRequest.getDevise());
     possessions.add(new Materiel(materielRequest.getNom()
     ,materielRequest.getT(),materielRequest.getValeurComptable(),materielRequest.getDateAcquisition(),materielRequest.getTauxDAppreciationAnuelle(),devise
     ));
-    return services.crupdatePossessionByPatrimoine("patrimoine",possessions,email);
+    return services.crupdatePossessionByPatrimoine(nom_patrimoine,possessions,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/argent")
