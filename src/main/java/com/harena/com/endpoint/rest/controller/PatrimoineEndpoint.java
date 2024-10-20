@@ -83,13 +83,16 @@ public class PatrimoineEndpoint {
             @RequestParam String email
     ) throws IOException {
         Set<Possession> possessions=new HashSet<>();
-        if(materielRequest.getDevise().equals("MGA"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.MGA));
-        if(materielRequest.getDevise().equals("EUR"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.EUR));
-        if(materielRequest.getDevise().equals("CAD"))
-            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAcquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.CAD));
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
+        Devise devise = switch (materielRequest.getDevise()) {
+            case "MGA" -> Devise.MGA;
+            case "EUR" -> Devise.EUR;
+            case "CAD" -> Devise.CAD;
+            default -> throw new IllegalArgumentException("Devise non prise en charge: " + materielRequest.getDevise());
+        };
+    possessions.add(new Materiel(materielRequest.getNom()
+    ,materielRequest.getT(),materielRequest.getValeurComptable(),materielRequest.getDateAcquisition(),materielRequest.getTauxDAppreciationAnuelle(),devise
+    ));
+    return services.crupdatePossessionByPatrimoine("patrimoine",possessions,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/argent")
