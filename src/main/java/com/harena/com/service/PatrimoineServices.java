@@ -116,7 +116,7 @@ public class PatrimoineServices {
         deletePossession(nomPossession,userEmail);
         Set<Possession> newPossessions=Set.of(fluxArgentToSave,argent);
 
-        actual.possessions().addAll(newPossessions);
+        crupdatePossessionByPatrimoine("patrimoine",newPossessions,userEmail);
         create(actual,userEmail);
         return  fluxArgentToSave;
     }
