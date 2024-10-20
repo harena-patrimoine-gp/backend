@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
+@NoArgsConstructor
 public class FluxArgentRequest extends PossessionRequest{
 
     private LocalDate debut;

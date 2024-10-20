@@ -9,13 +9,14 @@ import school.hei.patrimoine.modele.possession.Materiel;
 import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Getter
+@NoArgsConstructor
 public class MaterielRequest extends PossessionRequest{
-    private final LocalDate dateAquisition;
-    private final int tauxDApreciationAnuelle;
+    private  LocalDate dateAquisition;
+    private  int tauxDAppreciationAnuelle;
     public MaterielRequest(String nom, LocalDate date,LocalDate dateAquisition,int valeurComptable,int tauxDApreciationAnuelle,String devise){
         super(nom,date,valeurComptable,devise);
         this.dateAquisition=dateAquisition;
-        this.tauxDApreciationAnuelle=tauxDApreciationAnuelle;
+        this.tauxDAppreciationAnuelle=tauxDApreciationAnuelle;
 
     }
 }
