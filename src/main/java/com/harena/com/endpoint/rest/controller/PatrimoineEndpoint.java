@@ -83,12 +83,7 @@ public class PatrimoineEndpoint {
             @RequestParam String email
     ) throws IOException {
         Set<Possession> possessions=new HashSet<>();
-        Devise devise = switch (materielRequest.getDevise()) {
-            case "MGA" -> Devise.MGA;
-            case "EUR" -> Devise.EUR;
-            case "CAD" -> Devise.CAD;
-            default -> throw new IllegalArgumentException("Devise non prise en charge: " + materielRequest.getDevise());
-        };
+        Devise devise =stringToDevise(materielRequest.getDevise());
     possessions.add(new Materiel(materielRequest.getNom()
     ,materielRequest.getT(),materielRequest.getValeurComptable(),materielRequest.getDateAcquisition(),materielRequest.getTauxDAppreciationAnuelle(),devise
     ));
@@ -103,13 +98,7 @@ public class PatrimoineEndpoint {
     ) throws IOException {
         Set<Possession> possessions = new HashSet<>();
 
-        Devise devise = switch (argentRequest.getDevise()) {
-            case "MGA" -> Devise.MGA;
-            case "EUR" -> Devise.EUR;
-            case "CAD" -> Devise.CAD;
-            default -> throw new IllegalArgumentException("Devise non prise en charge: " + argentRequest.getDevise());
-        };
-
+        Devise devise=stringToDevise(argentRequest.getDevise());
         possessions.add(new Argent(
                 argentRequest.getNom(),
                 argentRequest.getDateOuverture(),
@@ -120,7 +109,15 @@ public class PatrimoineEndpoint {
 
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions, email);
     }
+    private Devise stringToDevise(String devise){
+       return  switch (devise) {
+            case "MGA" -> Devise.MGA;
+            case "EUR" -> Devise.EUR;
+            case "CAD" -> Devise.CAD;
+            default -> throw new IllegalArgumentException("Devise non prise en charge: " + devise);
+        };
 
+    }
 
     @PutMapping("/possessions/fluxArgent")
     public FluxArgent crupdateFluxArgent(
