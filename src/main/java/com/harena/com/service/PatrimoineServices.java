@@ -6,6 +6,7 @@ import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.model.exception.InternalServerErrorException;
 
 import com.harena.com.service.utils.SerializationFunctions;
+import com.harena.com.service.utils.StringToDeviseMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -107,10 +108,10 @@ public class PatrimoineServices {
         File file = bucketComponent.download(userEmail+"/patrimoine" + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Argent argent= (Argent) actual.possessionParNom(nomPossession);
-        Argent updatedArgent=new Argent(argent.getNom(),argent.getDateOuverture(),argent.getT(),argent.getValeurComptable(),Devise.NON_NOMMEE);
+        Argent updatedArgent=new Argent(argent.getNom(),argent.getDateOuverture(),argent.getT(),argent.getValeurComptable(), StringToDeviseMapper.stringToDevise(fluxArgent.getDevise()));
         FluxArgent fluxArgentToSave=new FluxArgent(
-                fluxArgent.getNom(),updatedArgent,fluxArgent.getDebut(),fluxArgent.getFin(),fluxArgent.getFluxMensuel(),fluxArgent.getDateOperation(),Devise.NON_NOMMEE
-        );
+                fluxArgent.getNom(),updatedArgent,fluxArgent.getDebut(),fluxArgent.getFin(),fluxArgent.getFluxMensuel(),fluxArgent.getDateOperation(),StringToDeviseMapper.stringToDevise(fluxArgent.getDevise()));
+
 
         deletePossession(nomPossession,userEmail);
         Set<Possession> newPossessions=Set.of(fluxArgentToSave,argent);
@@ -120,20 +121,7 @@ public class PatrimoineServices {
         return  fluxArgentToSave;
     }
 
-    private Devise mapDevise(String devise){
-        if (devise.equalsIgnoreCase("mga")) {
-            return Devise.MGA;
-        } else if (devise.equalsIgnoreCase("eur")) {
-            return Devise.EUR;
 
-        }
-        else if(devise.equalsIgnoreCase("cad"))
-            return Devise.CAD;
-        else {
-            return null;
-        }
-
-    }
 
     public Patrimoine findPatrimoine(String userEmail) {
         try {

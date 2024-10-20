@@ -1,6 +1,7 @@
 package com.harena.com.service.utils;
 
 import org.springframework.stereotype.Service;
+import school.hei.patrimoine.modele.Devise;
 import school.hei.patrimoine.modele.Patrimoine;
 import school.hei.patrimoine.serialisation.Serialiseur;
 
@@ -33,4 +34,5 @@ public class SerializationFunctions<T> {
         String encodedTxt = new String(Files.readAllBytes(file.toPath()));
         return serialiseur.deserialise(encodedTxt);
     }
+
 }

@@ -6,6 +6,7 @@ import com.harena.com.model.request.ArgentRequest;
 import com.harena.com.model.request.FluxArgentRequest;
 import com.harena.com.model.request.MaterielRequest;
 import com.harena.com.service.PatrimoineServices;
+import com.harena.com.service.utils.StringToDeviseMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +84,7 @@ public class PatrimoineEndpoint {
             @RequestParam String email
     ) throws IOException {
         Set<Materiel> possessions=new HashSet<>();
-        Devise devise =stringToDevise(materielRequest.getDevise());
+        Devise devise =StringToDeviseMapper.stringToDevise(materielRequest.getDevise());
     possessions.add(new Materiel(materielRequest.getNom()
     ,materielRequest.getT(),materielRequest.getValeurComptable(),materielRequest.getDateAcquisition(),materielRequest.getTauxDAppreciationAnuelle(),devise
     ));
@@ -98,7 +99,7 @@ public class PatrimoineEndpoint {
     ) throws IOException {
         Set<Possession> possessions = new HashSet<>();
 
-        Devise devise=stringToDevise(argentRequest.getDevise());
+        Devise devise= StringToDeviseMapper.stringToDevise(argentRequest.getDevise());
         possessions.add(new Argent(
                 argentRequest.getNom(),
                 argentRequest.getDateOuverture(),
@@ -109,15 +110,7 @@ public class PatrimoineEndpoint {
 
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions, email);
     }
-    private Devise stringToDevise(String devise){
-       return  switch (devise) {
-            case "MGA" -> Devise.MGA;
-            case "EUR" -> Devise.EUR;
-            case "CAD" -> Devise.CAD;
-            default -> throw new IllegalArgumentException("Devise non prise en charge: " + devise);
-        };
 
-    }
 
     @PutMapping("/possessions/fluxArgent")
     public FluxArgent crupdateFluxArgent(
