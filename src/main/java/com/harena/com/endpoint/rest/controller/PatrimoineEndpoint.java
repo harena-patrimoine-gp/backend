@@ -2,14 +2,12 @@ package com.harena.com.endpoint.rest.controller;
 
 import com.harena.com.file.BucketComponent;
 
-import com.harena.com.model.FluxArgentRequest;
-import com.harena.com.model.exception.BadRequestException;
+import com.harena.com.model.request.ArgentRequest;
+import com.harena.com.model.request.FluxArgentRequest;
+import com.harena.com.model.request.MaterielRequest;
 import com.harena.com.service.PatrimoineServices;
-import com.harena.com.service.utils.SerializationFunctions;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.hei.patrimoine.modele.Devise;
@@ -81,21 +79,45 @@ public class PatrimoineEndpoint {
     @PutMapping("/{nom_patrimoine}/possessions/materiel")
     public Set<Possession> crupdateMateriel(
             @PathVariable String nom_patrimoine,
-            @RequestBody Set<Materiel> possessions,
+            @RequestBody MaterielRequest materielRequest,
             @RequestParam String email
     ) throws IOException {
+        Set<Possession> possessions=new HashSet<>();
+        if(materielRequest.getDevise().equals("MGA"))
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.MGA));
+        if(materielRequest.getDevise().equals("EUR"))
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.EUR));
+        if(materielRequest.getDevise().equals("CAD"))
+            possessions.add(new Argent(materielRequest.getNom(),materielRequest.getDateAquisition(),materielRequest.getT(),materielRequest.getValeurComptable(), Devise.CAD));
         return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
     }
 
     @PutMapping("/{nom_patrimoine}/possessions/argent")
     public Set<Possession> crupdateArgent(
             @PathVariable String nom_patrimoine,
-            @RequestBody Set<Argent> possessions,
+            @RequestBody ArgentRequest argentRequest,
             @RequestParam String email
-
     ) throws IOException {
-        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions,email);
+        Set<Possession> possessions = new HashSet<>();
+
+        Devise devise = switch (argentRequest.getDevise()) {
+            case "MGA" -> Devise.MGA;
+            case "EUR" -> Devise.EUR;
+            case "CAD" -> Devise.CAD;
+            default -> throw new IllegalArgumentException("Devise non prise en charge: " + argentRequest.getDevise());
+        };
+
+        possessions.add(new Argent(
+                argentRequest.getNom(),
+                argentRequest.getDateOuverture(),
+                argentRequest.getT(),
+                argentRequest.getValeurComptable(),
+                devise
+        ));
+
+        return services.crupdatePossessionByPatrimoine(nom_patrimoine, possessions, email);
     }
+
 
     @PutMapping("/possessions/fluxArgent")
     public FluxArgent crupdateFluxArgent(

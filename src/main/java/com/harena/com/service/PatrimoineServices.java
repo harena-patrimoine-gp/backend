@@ -1,8 +1,7 @@
 package com.harena.com.service;
 
 import com.harena.com.file.BucketComponent;
-import com.harena.com.file.FileHash;
-import com.harena.com.model.FluxArgentRequest;
+import com.harena.com.model.request.FluxArgentRequest;
 import com.harena.com.model.exception.BadRequestException;
 import com.harena.com.model.exception.InternalServerErrorException;
 
@@ -24,8 +23,6 @@ import school.hei.patrimoine.visualisation.xchart.GrapheurEvolutionPatrimoine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -110,20 +107,17 @@ public class PatrimoineServices {
         File file = bucketComponent.download(userEmail+"/patrimoine" + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Argent argent= (Argent) actual.possessionParNom(nomPossession);
+        Argent updatedArgent=new Argent(argent.getNom(),argent.getDateOuverture(),argent.getT(),argent.getValeurComptable(),Devise.NON_NOMMEE);
         FluxArgent fluxArgentToSave=new FluxArgent(
-                fluxArgent.getNom(),argent,fluxArgent.getDebut(),fluxArgent.getFin(),fluxArgent.getFluxMensuel(),fluxArgent.getDateOperation()
+                fluxArgent.getNom(),updatedArgent,fluxArgent.getDebut(),fluxArgent.getFin(),fluxArgent.getFluxMensuel(),fluxArgent.getDateOperation(),Devise.NON_NOMMEE
         );
 
         deletePossession(nomPossession,userEmail);
         Set<Possession> newPossessions=Set.of(fluxArgentToSave,argent);
 
-        actual.possessions().add(argent);
-        crupdatePossessionByPatrimoine("patrimoine",newPossessions,userEmail);
-
-
-
-
-        return fluxArgentToSave;
+        actual.possessions().addAll(newPossessions);
+        create(actual,userEmail);
+        return  fluxArgentToSave;
     }
 
     private Devise mapDevise(String devise){
@@ -149,8 +143,9 @@ public class PatrimoineServices {
             return patrimoine;
 
         } catch (BadRequestException | IOException e) {
-            throw new BadRequestException( "patrimony does not exist");
+           e.printStackTrace();
         }
+        return null;
     }
 
 
