@@ -11,11 +11,11 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 public class MaterielRequest extends PossessionRequest{
-    private  LocalDate dateAquisition;
+    private  LocalDate dateAcquisition;
     private  int tauxDAppreciationAnuelle;
     public MaterielRequest(String nom, LocalDate date,LocalDate dateAquisition,int valeurComptable,int tauxDApreciationAnuelle,String devise){
         super(nom,date,valeurComptable,devise);
-        this.dateAquisition=dateAquisition;
+        this.dateAcquisition=dateAquisition;
         this.tauxDAppreciationAnuelle=tauxDApreciationAnuelle;
 
     }
