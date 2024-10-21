@@ -93,7 +93,7 @@ public class PatrimoineEndpoint {
     }
 
     @GetMapping("/fluxArgents")
-    public Set<Possession> getAllFluxArgent(@RequestParam String userEmail) throws IOException {
+    public Set<FluxArgent> getAllFluxArgent(@RequestParam String userEmail) throws IOException {
         return services.getFluxArgent("patrimoine",userEmail);
     }
     @PutMapping("/{nom_patrimoine}/possessions/materiel")
