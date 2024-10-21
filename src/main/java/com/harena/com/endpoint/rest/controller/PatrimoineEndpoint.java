@@ -92,6 +92,10 @@ public class PatrimoineEndpoint {
         return services.getPossessionByPatrimoine(nom_patrimoine,email);
     }
 
+    @GetMapping("/fluxArgents")
+    public Set<Possession> getAllFluxArgent(@RequestParam String userEmail) throws IOException {
+        return services.getFluxArgent("patrimoine",userEmail);
+    }
     @PutMapping("/{nom_patrimoine}/possessions/materiel")
     public Set<Possession> crupdateMateriel(
             @PathVariable String nom_patrimoine,
