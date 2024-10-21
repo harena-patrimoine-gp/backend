@@ -120,7 +120,7 @@ public class PatrimoineEndpoint {
             @RequestBody ArgentRequest argentRequest,
             @RequestParam String email
     ) throws IOException {
-        Set<Possession> possessions = new HashSet<>();
+        Set<Argent> possessions = new HashSet<>();
 
         Devise devise= StringToDeviseMapper.stringToDevise(argentRequest.getDevise());
         possessions.add(new Argent(
