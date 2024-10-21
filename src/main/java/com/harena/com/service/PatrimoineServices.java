@@ -73,12 +73,13 @@ public class PatrimoineServices {
     public File getPatrimoineFuture(String nom_patrimoine,String userEmail, LocalDate debut, LocalDate fin) throws IOException {
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
-        Patrimoine futurPatrimoine = actual.projectionFuture(fin);
-        EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(futurPatrimoine.nom() + "evolution", futurPatrimoine, debut, fin);
+        //Patrimoine futurPatrimoine = actual.projectionFuture(debut);
+        EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(actual.nom() + "evolution", actual, debut, fin);
         GrapheurEvolutionPatrimoine grapheur = new GrapheurEvolutionPatrimoine();
         Files.deleteIfExists(file.toPath());
         return grapheur.apply(evolutionPatrimoine);
     }
+
 
     public Set<Possession> getPossessionByPatrimoine(String nom_patrimoine,String userEmail) throws IOException {
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
