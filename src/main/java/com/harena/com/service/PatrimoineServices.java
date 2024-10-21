@@ -92,7 +92,16 @@ public class PatrimoineServices {
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
         Files.delete(file.toPath());
-        return actual.possessions().stream().filter(possession -> !(possession instanceof FluxArgent)).collect(Collectors.toSet());
+        return actual.possessions().stream().filter(possession -> !(possession instanceof FluxArgent || possession instanceof Argent)).collect(Collectors.toSet());
+    }
+    public Set<Argent> getArgent(String nom_patrimoine,String userEmail) throws IOException {
+        File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
+        Patrimoine actual = functions.decodeFile(file);
+        Set<Possession> possessions=actual.possessions();
+        return possessions.stream()
+                .filter(possession -> possession instanceof Argent)
+                .map(possession -> (Argent)possession)
+                .collect(Collectors.toSet());
     }
     public Set<FluxArgent> getFluxArgent(String nom_patrimoine,String userEmail) throws IOException {
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
