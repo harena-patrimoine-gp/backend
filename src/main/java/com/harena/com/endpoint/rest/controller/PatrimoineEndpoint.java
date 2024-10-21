@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -70,6 +71,20 @@ public class PatrimoineEndpoint {
         }
         File file =  services.getPatrimoineFuture(nom_patrimoine, email,debut, fin);
         return new ResponseEntity<>(Files.readAllBytes(file.toPath()), HttpStatus.OK);
+    }
+    @GetMapping("/evolution_journaliere")
+    public ResponseEntity<Map<LocalDate,Patrimoine>> getPatrimoineFuture(
+            @RequestParam String email,
+            @RequestParam LocalDate debut,
+            @RequestParam LocalDate fin) throws IOException {
+        if (debut == null) {
+            LocalDate newDebut = LocalDate.now();
+            LocalDate newFin = newDebut.plusDays(1);
+            Map<LocalDate,Patrimoine> evolution= services.getEvolutoinJournalier("patrimoine",email,LocalDate.now(),newFin);
+            return new ResponseEntity<>(evolution, HttpStatus.OK);
+        }
+        Map<LocalDate,Patrimoine> evolution= services.getEvolutoinJournalier("patrimoine",email,debut,fin);
+        return new ResponseEntity<>(evolution, HttpStatus.OK);
     }
 
     @GetMapping("/{nom_patrimoine}/possessions")

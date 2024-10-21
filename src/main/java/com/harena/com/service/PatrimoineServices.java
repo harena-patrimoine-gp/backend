@@ -79,6 +79,13 @@ public class PatrimoineServices {
         Files.deleteIfExists(file.toPath());
         return grapheur.apply(evolutionPatrimoine);
     }
+    public Map<LocalDate,Patrimoine> getEvolutoinJournalier(String nom_patrimoine,String userEmail, LocalDate debut, LocalDate fin) throws IOException {
+        File file = bucketComponent.download(userEmail + "/" + nom_patrimoine + extensionFile);
+        Patrimoine actual = functions.decodeFile(file);
+        //Patrimoine futurPatrimoine = actual.projectionFuture(debut);
+        EvolutionPatrimoine evolutionPatrimoine = new EvolutionPatrimoine(actual.nom() + "evolution", actual, debut, fin);
+        return evolutionPatrimoine.getEvolutionJournaliere();
+    }
 
 
     public Set<Possession> getPossessionByPatrimoine(String nom_patrimoine,String userEmail) throws IOException {
