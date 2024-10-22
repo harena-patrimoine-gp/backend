@@ -119,7 +119,7 @@ public class PatrimoineServices {
 
         File file = bucketComponent.download(userEmail+"/"+nom_patrimoine + extensionFile);
         Patrimoine actual = functions.decodeFile(file);
-        Set<Possession> actualPossessions = getPossessionByPatrimoine(nom_patrimoine,userEmail);
+        Set<Possession> actualPossessions = actual.possessions();
         Set<Possession> possessionSet = new HashSet<>();
         possessionSet.addAll(actualPossessions);
         possessionSet.addAll(possessions);
